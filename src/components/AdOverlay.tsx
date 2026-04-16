@@ -37,7 +37,7 @@ export default function AdOverlay({ ad }: Props) {
           fontSize: 26,
         }}
       >
-        ⌚
+        👕
       </div>
 
       {/* Ad text */}

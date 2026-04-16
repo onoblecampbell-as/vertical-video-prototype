@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import type { FeedItem } from '../types/feed'
 import VideoPlayer from './VideoPlayer'
 
@@ -9,6 +10,15 @@ interface Props {
 }
 
 export default function FullscreenAdItem({ item, index, isActive, isMuted }: Props) {
+  const [expired, setExpired] = useState(false)
+
+  useEffect(() => {
+    if (!item.isWerbepause) return
+    setExpired(false)
+    if (!isActive) return
+    const t = setTimeout(() => setExpired(true), 3000)
+    return () => clearTimeout(t)
+  }, [isActive, item.isWerbepause])
   return (
     <div
       data-feed-item
@@ -59,7 +69,7 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted }: Pro
           color: '#fff',
         }}
       >
-        {item.isWerbepause ? 'Werbepause' : 'Ad'}
+        {item.isWerbepause && !expired ? 'Werbepause' : 'Anzeige'}
       </div>
 
       {/* Bottom section: advertiser, headline, subline, CTA, skip scaffold */}
@@ -153,28 +163,43 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted }: Pro
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8,
-                color: 'rgba(255,255,255,0.65)',
+                color: expired ? '#fff' : 'rgba(255,255,255,0.65)',
                 fontSize: 12,
                 fontWeight: 600,
               }}
             >
               <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '50%',
-                  border: '2.5px solid rgba(255,255,255,0.35)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 16,
-                  color: '#fff',
-                  flexShrink: 0,
-                }}
+                key={isActive ? 1 : 0}
+                style={{ position: 'relative', width: 40, height: 40, flexShrink: 0 }}
               >
-                ⏸
+                <svg
+                  width="40" height="40"
+                  viewBox="0 0 40 40"
+                  style={{ position: 'absolute', top: 0, left: 0, transform: 'rotate(-90deg)' }}
+                >
+                  {/* Track */}
+                  <circle cx="20" cy="20" r="17" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="2" />
+                  {/* Countdown arc */}
+                  <circle
+                    cx="20" cy="20" r="17"
+                    fill="none"
+                    stroke="#FFD700"
+                    strokeWidth="2"
+                    strokeDasharray="106.81"
+                    strokeDashoffset="0"
+                    strokeLinecap="round"
+                    style={{ animation: isActive ? 'werbepause-countdown 3s linear forwards' : 'none' }}
+                  />
+                </svg>
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 16, color: '#fff',
+                }}>
+                  ⏸
+                </div>
               </div>
-              <span>Cannot skip</span>
+              <span>{expired ? 'Anzeige überspringen ›' : 'Nicht überspringbar'}</span>
             </div>
           ) : item.skipAfterSeconds !== undefined ? (
             // Skippable ad: skip button scaffold, Phase 5 will enable after countdown
@@ -191,7 +216,7 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted }: Pro
                 letterSpacing: '0.03em',
               }}
             >
-              Skip Ad ›
+              Anzeige überspringen ›
             </button>
           ) : null}
         </div>

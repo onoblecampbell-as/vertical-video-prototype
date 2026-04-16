@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import type { FeedItem } from '../types/feed'
 import {
   HeartIcon,
@@ -6,7 +6,6 @@ import {
   VolumeOnIcon,
   VolumeOffIcon,
   VerifiedIcon,
-  MusicNoteIcon,
 } from './icons'
 import AdOverlay from './AdOverlay'
 
@@ -33,15 +32,6 @@ export default function VideoOverlay({
 }: Props) {
   const [shareFlash, setShareFlash] = useState(false)
   const [copyToast, setCopyToast] = useState(false)
-  const [wordIndex, setWordIndex] = useState(0)
-
-  useEffect(() => {
-    setWordIndex(0)
-    const words = item.subtitleWords
-    if (!words?.length) return
-    const id = setInterval(() => setWordIndex(i => (i + 1) % words.length), 400)
-    return () => clearInterval(id)
-  }, [item.id, item.subtitleWords])
 
   const handleShare = useCallback(() => {
     const url = `${window.location.origin}/video/${item.id}`
@@ -74,45 +64,34 @@ export default function VideoOverlay({
         }}
       />
 
-      {/* Subtitle / caption overlay — positioned upper-center */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: 16,
-          right: 16,
-          transform: 'translateY(-50%)',
-          textAlign: 'center',
-          zIndex: 2,
-          pointerEvents: 'none',
-        }}
-      >
-        {item.subtitleWords?.map((word, i) => (
-          <span
-            key={i}
-            style={{
-              display: 'inline',
-              fontSize: 15,
-              fontWeight: 600,
-              lineHeight: 1.8,
-              color: i === wordIndex ? '#000' : '#fff',
-              background: i === wordIndex ? '#E30613' : 'rgba(0,0,0,0.32)',
-              textShadow: i === wordIndex ? 'none' : '0 1px 6px rgba(0,0,0,0.9)',
-              padding: '2px 5px',
-              borderRadius: 3,
-              marginRight: 3,
-              transition: 'background 0.15s, color 0.15s',
-            }}
-          >
-            {word}
+      {/* Subtitle block — single continuous bg, max 2 lines */}
+      {item.captions && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: 32,
+            right: 32,
+            textAlign: 'center',
+            transform: 'translateY(-50%)',
+            zIndex: 2,
+            pointerEvents: 'none',
+            background: 'rgba(0,0,0,0.6)',
+            borderRadius: 6,
+            padding: '8px 8px',
+            lineHeight: 1.8,
+          }}
+        >
+          <span style={{ fontSize: 15, fontWeight: 600, color: '#fff' }}>
+            {item.captions ?? ''}
           </span>
-        ))}
-      </div>
+        </div>
+      )}
 
       {/* Copy-link toast */}
       {copyToast && (
         <div className="copy-toast">
-          Link copied
+          Link kopiert
         </div>
       )}
 
@@ -137,7 +116,7 @@ export default function VideoOverlay({
             zIndex: 10,
           }}
         >
-          Sponsored
+          Gesponsert
         </div>
       )}
 
@@ -229,25 +208,6 @@ export default function VideoOverlay({
               </p>
             )}
 
-            {/* Audio label */}
-            {item.audioLabel && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <span style={{ color: 'rgba(255,255,255,0.55)', display: 'flex' }}>
-                  <MusicNoteIcon />
-                </span>
-                <span
-                  style={{
-                    fontSize: 11,
-                    color: 'rgba(255,255,255,0.55)',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {item.audioLabel}
-                </span>
-              </div>
-            )}
 
             {/* CTA for sponsored treatment */}
             {item.isSponsored && item.cta && (
@@ -298,7 +258,7 @@ export default function VideoOverlay({
               aria-label={isMuted ? 'Unmute' : 'Mute'}
             >
               {isMuted ? <VolumeOffIcon /> : <VolumeOnIcon />}
-              <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>Sound</span>
+              <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>Ton</span>
             </button>
             <ActionButton
               icon={<HeartIcon filled={liked} />}

@@ -95,6 +95,12 @@ button {
   animation: toastIn 0.2s ease-out forwards;
 }
 
+/* Werbepause countdown ring */
+@keyframes werbepause-countdown {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: 106.81; }
+}
+
 /* Scrollbar hide */
 .feed-container::-webkit-scrollbar {
   display: none;
