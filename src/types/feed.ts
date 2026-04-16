@@ -7,21 +7,35 @@ export interface OverlayAd {
 
 export interface FeedItem {
   id: string
-  type: 'organic' | 'sponsored'
+  type: 'organic' | 'fullscreenAd'
   videoSrc: string
-  caption: string
-  captions: string
-  likes: number
-  shares: number
-  // Organic
+
+  // Organic fields
   publisher?: string
   publisherVerified?: boolean
+  caption?: string
+  captions?: string
+  likes?: number
+  shares?: number
   hashtags?: string[]
   audioLabel?: string
+
+  // Mocked subtitle words (cycled with highlight for prototype)
+  subtitleWords?: string[]
+
+  // Overlay ad (on organic items)
   hasOverlayAd?: boolean
   overlayAd?: OverlayAd
-  // Sponsored
-  sponsor?: string
-  sponsoredLabel?: string
+
+  // Sponsored treatment (on organic items)
+  isSponsored?: boolean
   cta?: string
+
+  // Fullscreen ad fields
+  advertiser?: string
+  adHeadline?: string
+  adSubline?: string
+  adCta?: string
+  isWerbepause?: boolean
+  skipAfterSeconds?: number
 }

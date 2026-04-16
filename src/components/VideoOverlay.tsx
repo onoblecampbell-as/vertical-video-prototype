@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import type { FeedItem } from '../types/feed'
 import {
   HeartIcon,
@@ -33,6 +33,15 @@ export default function VideoOverlay({
 }: Props) {
   const [shareFlash, setShareFlash] = useState(false)
   const [copyToast, setCopyToast] = useState(false)
+  const [wordIndex, setWordIndex] = useState(0)
+
+  useEffect(() => {
+    setWordIndex(0)
+    const words = item.subtitleWords
+    if (!words?.length) return
+    const id = setInterval(() => setWordIndex(i => (i + 1) % words.length), 400)
+    return () => clearInterval(id)
+  }, [item.id, item.subtitleWords])
 
   const handleShare = useCallback(() => {
     const url = `${window.location.origin}/video/${item.id}`
@@ -48,8 +57,8 @@ export default function VideoOverlay({
     }
   }, [item.id, item.caption])
 
-  const displayName = item.type === 'sponsored' ? item.sponsor : item.publisher
-  const isVerified = item.publisherVerified || item.type === 'sponsored'
+  const displayName = item.publisher
+  const isVerified = item.publisherVerified ?? false
 
   return (
     <>
@@ -69,29 +78,35 @@ export default function VideoOverlay({
       <div
         style={{
           position: 'absolute',
-          top: '28%',
+          top: '50%',
           left: 16,
           right: 16,
+          transform: 'translateY(-50%)',
           textAlign: 'center',
           zIndex: 2,
           pointerEvents: 'none',
         }}
       >
-        <span
-          style={{
-            display: 'inline',
-            fontSize: 15,
-            fontWeight: 600,
-            lineHeight: 1.45,
-            color: '#fff',
-            textShadow: '0 1px 6px rgba(0,0,0,0.9)',
-            background: 'rgba(0,0,0,0.28)',
-            padding: '2px 6px',
-            borderRadius: 4,
-          }}
-        >
-          {item.captions}
-        </span>
+        {item.subtitleWords?.map((word, i) => (
+          <span
+            key={i}
+            style={{
+              display: 'inline',
+              fontSize: 15,
+              fontWeight: 600,
+              lineHeight: 1.8,
+              color: i === wordIndex ? '#000' : '#fff',
+              background: i === wordIndex ? '#E30613' : 'rgba(0,0,0,0.32)',
+              textShadow: i === wordIndex ? 'none' : '0 1px 6px rgba(0,0,0,0.9)',
+              padding: '2px 5px',
+              borderRadius: 3,
+              marginRight: 3,
+              transition: 'background 0.15s, color 0.15s',
+            }}
+          >
+            {word}
+          </span>
+        ))}
       </div>
 
       {/* Copy-link toast */}
@@ -101,8 +116,8 @@ export default function VideoOverlay({
         </div>
       )}
 
-      {/* Top-right: Sponsored badge (sponsored items only) */}
-      {item.type === 'sponsored' && (
+      {/* Top-right: Sponsored badge (isSponsored treatment only) */}
+      {item.isSponsored && (
         <div
           style={{
             position: 'absolute',
@@ -136,17 +151,9 @@ export default function VideoOverlay({
           paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)',
           display: 'flex',
           flexDirection: 'column',
-          gap: 12,
           zIndex: 5,
         }}
       >
-        {/* Lower-third overlay ad */}
-        {item.hasOverlayAd && item.overlayAd && (
-          <div style={{ paddingLeft: 12, paddingRight: 68 }}>
-            <AdOverlay ad={item.overlayAd} />
-          </div>
-        )}
-
         {/* Metadata + action rail */}
         <div
           style={{
@@ -158,6 +165,13 @@ export default function VideoOverlay({
         >
           {/* Left: metadata */}
           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {/* Lower-third overlay ad — sits directly above publisher row */}
+            {item.hasOverlayAd && item.overlayAd && (
+              <div style={{ marginBottom: 6 }}>
+                <AdOverlay ad={item.overlayAd} />
+              </div>
+            )}
+
             {/* Publisher row */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               {/* Avatar placeholder */}
@@ -205,7 +219,7 @@ export default function VideoOverlay({
                 overflow: 'hidden',
               }}
             >
-              {item.caption}
+              {item.caption ?? ''}
             </p>
 
             {/* Hashtags */}
@@ -235,8 +249,8 @@ export default function VideoOverlay({
               </div>
             )}
 
-            {/* CTA for sponsored */}
-            {item.type === 'sponsored' && item.cta && (
+            {/* CTA for sponsored treatment */}
+            {item.isSponsored && item.cta && (
               <button
                 style={{
                   marginTop: 4,
@@ -288,14 +302,14 @@ export default function VideoOverlay({
             </button>
             <ActionButton
               icon={<HeartIcon filled={liked} />}
-              count={item.likes + (liked ? 1 : 0)}
+              count={(item.likes ?? 0) + (liked ? 1 : 0)}
               onClick={onLike}
               color={liked ? '#ff4757' : '#fff'}
               className={liked ? 'heart-pop' : ''}
             />
             <ActionButton
               icon={<ShareIcon />}
-              count={item.shares}
+              count={item.shares ?? 0}
               onClick={handleShare}
               color={shareFlash ? 'rgba(255,255,255,0.5)' : '#fff'}
             />

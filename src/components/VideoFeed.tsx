@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { feedItems } from '../data/feedItems'
 import VideoFeedItem from './VideoFeedItem'
+import FullscreenAdItem from './FullscreenAdItem'
 import type { FeedItem } from '../types/feed'
 
 export default function VideoFeed() {
@@ -10,7 +11,8 @@ export default function VideoFeed() {
 
   const handleMuteToggle = useCallback(() => setIsMuted((prev) => !prev), [])
 
-  // IntersectionObserver: mark the item that covers ≥ 60% of the viewport as active
+  // Phase 4: renders all feedItems (organic + fullscreenAd) using IntersectionObserver
+  // to mark the item that covers ≥ 60% of the viewport as active
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -52,16 +54,26 @@ export default function VideoFeed() {
         overscrollBehavior: 'contain',
       }}
     >
-      {(feedItems as FeedItem[]).map((item, index) => (
-        <VideoFeedItem
-          key={item.id}
-          item={item}
-          index={index}
-          isActive={activeIndex === index}
-          isMuted={isMuted}
-          onMuteToggle={handleMuteToggle}
-        />
-      ))}
+      {(feedItems as FeedItem[]).map((item, index) =>
+        item.type === 'fullscreenAd' ? (
+          <FullscreenAdItem
+            key={item.id}
+            item={item}
+            index={index}
+            isActive={activeIndex === index}
+            isMuted={isMuted}
+          />
+        ) : (
+          <VideoFeedItem
+            key={item.id}
+            item={item}
+            index={index}
+            isActive={activeIndex === index}
+            isMuted={isMuted}
+            onMuteToggle={handleMuteToggle}
+          />
+        )
+      )}
     </div>
   )
 }

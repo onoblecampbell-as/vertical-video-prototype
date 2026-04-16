@@ -16,23 +16,23 @@ Focus:
 
 ---
 
-# 🔴 Phase 1 - Core UX Polish (Immediate)
+# 🔴 Phase 1 - Core UX Polish
 
-* [ ] Fix subtitle alignment (centered, safe-area aware)
-* [ ] Move audio toggle into right-side action rail
-* [ ] Improve spacing and visual balance of overlay UI
-* [ ] Ensure captions are always readable above overlays
+* [x] Fix subtitle alignment (centered, safe-area aware)
+* [x] Move audio toggle into right-side action rail
+* [x] Improve spacing and visual balance of overlay UI
+* [x] Ensure captions are always readable above overlays
 
 ---
 
 # 🟠 Phase 2 - Core Interactions
 
-* [ ] Implement Like interaction
+* [x] Implement Like interaction
 
   * tap to like
   * double-tap gesture
   * filled heart state
-* [ ] Implement Share functionality
+* [x] Implement Share functionality
 
   * copy link
   * native share API (if available)
@@ -42,17 +42,11 @@ Focus:
 
 # 🟡 Phase 3 - Navigation & Web Behaviour
 
-* [ ] Add top navigation bar
-
-  * back button
-  * close/exit interaction
-* [ ] Define entry behaviour
-
-  * modal-style overlay OR dedicated route
-* [ ] Ensure mobile browser safe-area handling
-* [ ] Validate mobile web behaviour vs native expectations
-- [ ] Implement full-page vertical video route
-- [ ] Add top navigation bar with back button (browser back)
+* [x] Implement full-page vertical video route
+* [x] Add top navigation bar with back button / exit interaction
+* [x] Ensure mobile browser safe-area handling
+* [x] Validate mobile web behaviour vs native expectations
+* [x] Remove bottom app-style navigation bar
 
 ---
 
@@ -60,15 +54,36 @@ Focus:
 
 We must follow the PM-defined sequence.
 
-## Target: Minimum 10 feed items
+## Current media inventory
 
-Sequence:
+Organic videos:
+
+* `organic-video-1.mp4`
+* `organic-video-2.mp4`
+* `organic-video-3.mp4`
+* `organic-video-4.mp4`
+* `organic-video-5.mp4`
+* `organic-video-6.mp4`
+* `organic-video-7.mp4`
+
+Fullscreen ad videos:
+
+* `fullscreen-ad-1.mp4`
+* `fullscreen-ad-2.mp4`
+
+Important:
+
+* There is no longer a file named `sponsored-video-1.mp4`
+* Sponsored is now a state/treatment, not a file type
+* Overlay ads remain a UI layer on top of organic content
+
+## Target sequence
 
 1. Organic video
 2. Organic video + overlay ad
 3. Full screen video ad (skippable)
 4. Organic video
-5. Organic video + overlay ad
+5. Organic video + overlay ad + sponsored treatment
 6. Organic video
 7. Full screen video ad (Werbepause)
 8. Organic video
@@ -77,16 +92,18 @@ Sequence:
 
 ---
 
-## Data Model Updates
+## Data model updates
 
 * [ ] Extend `feedItems.ts` to support:
 
-  * `type: "organic" | "sponsored" | "fullscreenAd"`
+  * `type: "organic" | "fullscreenAd"`
   * `hasOverlayAd`
   * `overlayAd`
+  * `isSponsored`
   * `isWerbepause`
   * `skipAfterSeconds`
-* [ ] Add at least 10 items using available media (reuse videos if needed)
+* [ ] Add feed items using the current media inventory
+* [ ] Implement looping behaviour for the defined sequence
 
 ---
 
@@ -97,15 +114,21 @@ Sequence:
 * [ ] Ensure lower-third placement is clean
 * [ ] Ensure captions are not blocked
 * [ ] Improve visual polish (spacing, hierarchy)
+* [ ] Use label: `Advertisement`
+* [ ] Keep overlay ads semantically distinct from sponsored treatment
 
 ---
 
-## 5.2 Full Screen Ad (NEW)
+## 5.2 Full Screen Ad
 
 * [ ] Create full-screen ad state
-* [ ] Add "Sponsored" label
-* [ ] Add CTA button
+* [ ] Add clear sponsored / ad status label
+* [ ] Add headline + CTA
 * [ ] Add skip behaviour (after X seconds)
+* [ ] Use simple placeholder ad copy for now
+
+  * bank card themed ad
+  * healthy shake / protein themed ad
 
 ---
 
@@ -117,14 +140,14 @@ This is a special full-screen ad with interaction constraints.
 
 * [ ] Show circular button with pause icon
 * [ ] Circular border animates as countdown (3 seconds)
-* [ ] User CANNOT scroll during countdown
+* [ ] User cannot scroll during countdown
 
 ### Interaction
 
 * [ ] If user tries to scroll:
 
   * Option A: trigger haptic feedback (if possible)
-  * Option B (fallback): visual feedback
+  * Option B: visual feedback
 
     * ad label scales ~10%
     * subtle animation indicating blocked interaction
@@ -152,9 +175,7 @@ This is a special full-screen ad with interaction constraints.
 
 Adapt the neutral prototype into a BILD-style experience while preserving core UX and layout.
 
-Branding should be applied as a visual layer only — not by restructuring components.
-
----
+Branding should be applied as a visual layer only, not by restructuring components.
 
 ## Branding tasks
 
@@ -180,16 +201,12 @@ Branding should be applied as a visual layer only — not by restructuring compo
 * [ ] Adjust spacing to feel more editorial/tabloid
 * [ ] Ensure ads visually align with BILD style
 
----
-
 ## Constraints
 
-* [ ] Do NOT change layout structure
-* [ ] Do NOT move core components
-* [ ] Do NOT break interaction patterns
-* [ ] Do NOT reduce readability
-
----
+* [ ] Do not change layout structure
+* [ ] Do not move core components
+* [ ] Do not break interaction patterns
+* [ ] Do not reduce readability
 
 ## Goal outcome
 
@@ -203,7 +220,7 @@ A prototype that:
 
 # ⚪ Phase 8 - Feed Entry Experience (Optional)
 
-* [ ] Add intro/entry state (e.g. "Trending", "For You")
+* [ ] Add intro / entry state (e.g. "Trending", "For You")
 * [ ] Define transition into feed
 
 ---
@@ -217,6 +234,15 @@ A prototype that:
 
 ---
 
+# 🔔 Reminder - Localisation
+
+* [ ] Translate all UI text from English to German before final handoff
+
+  * Includes: labels, buttons, captions, ad copy, action rail labels, toast messages
+  * Do this last, after all phases are complete
+
+---
+
 # 📌 Notes
 
 ## Product constraints
@@ -227,7 +253,7 @@ A prototype that:
 
 ## Technical constraints
 
-* Use VideoPlayer abstraction
+* Use `VideoPlayer` abstraction
 * Do not block progress on Bitmovin
 * Keep code simple and modular
 
@@ -252,4 +278,4 @@ Work in phases:
 6. Phase 7 → branding
 7. Phase 9 → deploy
 
-Do NOT jump ahead or build everything at once.
+Do not jump ahead or build everything at once.
