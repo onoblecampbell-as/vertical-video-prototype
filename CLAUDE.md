@@ -19,6 +19,7 @@ Always prioritise:
 * /ref/design/screen-notes.md
 * /ref/docs/bitmovin-notes.md
 * /src/data/feedItems.ts
+* /docs/TODO.md (task execution plan)
 
 Do NOT invent new product requirements or data structures if these already define them.
 

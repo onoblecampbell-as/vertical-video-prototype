@@ -32,14 +32,21 @@ export default function VideoOverlay({
   liked,
 }: Props) {
   const [shareFlash, setShareFlash] = useState(false)
+  const [copyToast, setCopyToast] = useState(false)
 
   const handleShare = useCallback(() => {
+    const url = `${window.location.origin}/video/${item.id}`
     setShareFlash(true)
     setTimeout(() => setShareFlash(false), 600)
     if (navigator.share) {
-      navigator.share({ title: item.caption, url: window.location.href }).catch(() => {})
+      navigator.share({ title: item.caption, url }).catch(() => {})
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        setCopyToast(true)
+        setTimeout(() => setCopyToast(false), 2000)
+      }).catch(() => {})
     }
-  }, [item.caption])
+  }, [item.id, item.caption])
 
   const displayName = item.type === 'sponsored' ? item.sponsor : item.publisher
   const isVerified = item.publisherVerified || item.type === 'sponsored'
@@ -64,7 +71,7 @@ export default function VideoOverlay({
           position: 'absolute',
           top: '28%',
           left: 16,
-          right: 72,
+          right: 16,
           textAlign: 'center',
           zIndex: 2,
           pointerEvents: 'none',
@@ -87,31 +94,12 @@ export default function VideoOverlay({
         </span>
       </div>
 
-      {/* Top-left: sound toggle */}
-      <button
-        onClick={onMuteToggle}
-        style={{
-          position: 'absolute',
-          top: 'calc(env(safe-area-inset-top) + 16px)',
-          left: 16,
-          background: 'rgba(0,0,0,0.45)',
-          backdropFilter: 'blur(6px)',
-          WebkitBackdropFilter: 'blur(6px)',
-          border: 'none',
-          borderRadius: '50%',
-          width: 38,
-          height: 38,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          color: '#fff',
-          zIndex: 10,
-        }}
-        aria-label={isMuted ? 'Unmute' : 'Mute'}
-      >
-        {isMuted ? <VolumeOffIcon /> : <VolumeOnIcon />}
-      </button>
+      {/* Copy-link toast */}
+      {copyToast && (
+        <div className="copy-toast">
+          Link copied
+        </div>
+      )}
 
       {/* Top-right: Sponsored badge (sponsored items only) */}
       {item.type === 'sponsored' && (
@@ -145,10 +133,10 @@ export default function VideoOverlay({
           left: 0,
           right: 0,
           bottom: 0,
-          paddingBottom: 'calc(var(--nav-height) + env(safe-area-inset-bottom))',
+          paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)',
           display: 'flex',
           flexDirection: 'column',
-          gap: 8,
+          gap: 12,
           zIndex: 5,
         }}
       >
@@ -164,7 +152,7 @@ export default function VideoOverlay({
           style={{
             display: 'flex',
             alignItems: 'flex-end',
-            padding: '0 12px 12px',
+            padding: '0 12px 16px',
             gap: 8,
           }}
         >
@@ -280,6 +268,24 @@ export default function VideoOverlay({
               paddingBottom: 4,
             }}
           >
+            <button
+              onClick={onMuteToggle}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 4,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: '#fff',
+                padding: 4,
+              }}
+              aria-label={isMuted ? 'Unmute' : 'Mute'}
+            >
+              {isMuted ? <VolumeOffIcon /> : <VolumeOnIcon />}
+              <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>Sound</span>
+            </button>
             <ActionButton
               icon={<HeartIcon filled={liked} />}
               count={item.likes + (liked ? 1 : 0)}

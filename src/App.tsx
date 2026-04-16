@@ -1,5 +1,5 @@
 import VideoFeed from './components/VideoFeed'
-import BottomNav from './components/BottomNav'
+import TopBar from './components/TopBar'
 
 export default function App() {
   return (
@@ -13,7 +13,7 @@ export default function App() {
       }}
     >
       <VideoFeed />
-      <BottomNav />
+      <TopBar />
     </div>
   )
 }
