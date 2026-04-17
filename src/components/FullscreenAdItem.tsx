@@ -170,8 +170,8 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
 
       </div>
 
-      {/* Bottom-right: Werbepause pill with embedded countdown */}
-      {item.isWerbepause && (
+      {/* Bottom-right: Werbepause pill with embedded countdown — disappears after expiry */}
+      {item.isWerbepause && !expired && (
         <div
           style={{
             position: 'absolute',
