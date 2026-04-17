@@ -1,281 +1,178 @@
-# Vertical Video Feed - TODO
+# Vertical Video Feed — TODO
 
-This file is the active task list for the project.
-Claude should always reference this file when implementing features.
+## 1. Project Goal
 
-## Project Goal
+Build a highly engaging vertical video feed prototype for a media publisher (Axel Springer / BILD) demonstrating realistic monetisation behaviour, editorial content, and ad integration.
 
-Build a highly engaging vertical video feed prototype for a media publisher with realistic monetisation behaviour, based on defined PM flow and ad patterns.
-
-Focus:
-
-* Core feed UX
-* Ad integration (overlay + full screen + werbepause)
-* Smooth interaction
-* Fast iteration
+**Today's goal:** Improve demo clarity, ad realism, and monetisation storytelling for stakeholder review.
+Not: perfect engineering, production behaviour, or deep refactoring.
 
 ---
 
-# 🔴 Phase 1 - Core UX Polish
+## 2. Current Status Snapshot
 
-* [x] Fix subtitle alignment (centered, safe-area aware)
-* [x] Move audio toggle into right-side action rail
-* [x] Improve spacing and visual balance of overlay UI
-* [x] Ensure captions are always readable above overlays
-
----
-
-# 🟠 Phase 2 - Core Interactions
-
-* [x] Implement Like interaction
-
-  * tap to like
-  * double-tap gesture
-  * filled heart state
-* [x] Implement Share functionality
-
-  * copy link
-  * native share API (if available)
-  * fallback UI
+| Area | Status |
+|---|---|
+| Core scroll / snap UX | ✅ Working |
+| Video playback (HTML5) | ✅ Working |
+| Overlay ads | ✅ Working |
+| Fullscreen ads | ✅ Working |
+| Werbepause state | ✅ Working |
+| Scroll lock on Werbepause | ✅ Working |
+| Skip button (skippable ads) | ✅ Working |
+| German UI / copy | ✅ Done |
+| Vercel deployment | ✅ Live |
+| Infinite loop | ❌ Not yet |
+| Sponsored treatment | 🔶 Present but to be removed |
 
 ---
 
-# 🟡 Phase 3 - Navigation & Web Behaviour
+## 3. Completed MVP Phases
 
-* [x] Implement full-page vertical video route
-* [x] Add top navigation bar with back button / exit interaction
-* [x] Ensure mobile browser safe-area handling
-* [x] Validate mobile web behaviour vs native expectations
-* [x] Remove bottom app-style navigation bar
+These are done. Do not revisit unless there is a visible bug blocking the demo.
 
----
-
-# 🔵 Phase 4 - Feed Structure (CRITICAL)
-
-We must follow the PM-defined sequence.
-
-## Current media inventory
-
-Organic videos:
-
-* `organic-video-1.mp4`
-* `organic-video-2.mp4`
-* `organic-video-3.mp4`
-* `organic-video-4.mp4`
-* `organic-video-5.mp4`
-* `organic-video-6.mp4`
-* `organic-video-7.mp4`
-
-Fullscreen ad videos:
-
-* `fullscreen-ad-1.mp4`
-* `fullscreen-ad-2.mp4`
-
-Important:
-
-* There is no longer a file named `sponsored-video-1.mp4`
-* Sponsored is now a state/treatment, not a file type
-* Overlay ads remain a UI layer on top of organic content
-
-## Target sequence
-
-1. Organic video
-2. Organic video + overlay ad
-3. Full screen video ad (skippable)
-4. Organic video
-5. Organic video + overlay ad + sponsored treatment
-6. Organic video
-7. Full screen video ad (Werbepause)
-8. Organic video
-9. Organic video + overlay ad
-10. Loop back to 1
+- ✅ **Phase 1** — Core UX: subtitle alignment, action rail, overlay layout, caption readability
+- ✅ **Phase 2** — Interactions: like (tap + double-tap), share (native + clipboard), sound toggle
+- ✅ **Phase 3** — Navigation: top bar, back button, safe-area handling, mobile web behaviour
+- ✅ **Phase 4** — Feed structure: organic + fullscreenAd types, 9-item loop, correct sequence
+- ✅ **Phase 5** — Advertising states: overlay ad, fullscreen ad (skippable), Werbepause with countdown and scroll lock
+- ✅ **Phase 6** — Feed behaviour: snap scroll, single active video, IntersectionObserver active tracking
 
 ---
 
-## Data model updates
+## 4. Today's Priority Demo Refinements
 
-* [ ] Extend `feedItems.ts` to support:
-
-  * `type: "organic" | "fullscreenAd"`
-  * `hasOverlayAd`
-  * `overlayAd`
-  * `isSponsored`
-  * `isWerbepause`
-  * `skipAfterSeconds`
-* [ ] Add feed items using the current media inventory
-* [ ] Implement looping behaviour for the defined sequence
+Work through these in order. Stop when time runs out — lower-numbered items have higher demo impact.
 
 ---
 
-# 🟣 Phase 5 - Advertising States
+### ✅ P1 — Infinite loop
 
-## 5.1 Overlay Ad (refinement)
-
-* [ ] Ensure lower-third placement is clean
-* [ ] Ensure captions are not blocked
-* [ ] Improve visual polish (spacing, hierarchy)
-* [ ] Use label: `Advertisement`
-* [ ] Keep overlay ads semantically distinct from sponsored treatment
+Feed repeats 5× (45 items) with unique keys. Scroll lock modulo fixed for Werbepause across loops.
 
 ---
 
-## 5.2 Full Screen Ad
+### ✅ P2 — Remove sponsored treatment
 
-* [ ] Create full-screen ad state
-* [ ] Add clear sponsored / ad status label
-* [ ] Add headline + CTA
-* [ ] Add skip behaviour (after X seconds)
-* [ ] Use simple placeholder ad copy for now
-
-  * bank card themed ad
-  * healthy shake / protein themed ad
+`isSponsored` removed. Replaced with `hasLinkout` / `linkoutCta` pattern on feed-1 and feed-9. "Gesponsert" badge and sponsored CTA gone from VideoOverlay.
 
 ---
 
-## 5.3 Werbepause State (HIGH PRIORITY)
+### ✅ P3 — Fullscreen ad 1: remove "skip ad" label
 
-This is a special full-screen ad with interaction constraints.
-
-### Behaviour
-
-* [ ] Show circular button with pause icon
-* [ ] Circular border animates as countdown (3 seconds)
-* [ ] User cannot scroll during countdown
-
-### Interaction
-
-* [ ] If user tries to scroll:
-
-  * Option A: trigger haptic feedback (if possible)
-  * Option B: visual feedback
-
-    * ad label scales ~10%
-    * subtle animation indicating blocked interaction
-
-### After countdown
-
-* [ ] Scrolling becomes enabled again
-* [ ] UI updates to reflect unlocked state
+Skip button UI removed from `FullscreenAdItem`. `canSkip` / `onSkip` logic kept intact.
 
 ---
 
-# 🟢 Phase 6 - Feed Behaviour Enhancements
+### ✅ P4 — Ad label: delayed appearance (organic overlay only)
 
-* [ ] Ensure smooth snap scrolling
-* [ ] Improve swipe feel (less mechanical)
-* [ ] Add subtle scaling/opacity transition for inactive items
-* [ ] Ensure only one video plays at a time
-* [ ] Improve perceived performance (preload next video if possible)
+**The overlay ad label ("Anzeige") on organic videos should appear 1 second after the video comes into view — only if the user stays.**
 
----
-
-# 🟥 Phase 7 - BILD Branding Layer
-
-## Goal
-
-Adapt the neutral prototype into a BILD-style experience while preserving core UX and layout.
-
-Branding should be applied as a visual layer only, not by restructuring components.
-
-## Branding tasks
-
-* [ ] Apply BILD color system
-
-  * primary red (#E30613 or closest match)
-  * neutral dark backgrounds
-* [ ] Update typography
-
-  * stronger headline weight
-  * more tabloid-style hierarchy
-* [ ] Adjust captions styling
-
-  * larger, bolder, more punchy
-  * high contrast for readability
-* [ ] Refine action rail icons
-
-  * slightly more expressive / bold
-* [ ] Add subtle brand presence
-
-  * optional BILD logo in top bar
-  * optional label like "BILD News"
-* [ ] Adjust spacing to feel more editorial/tabloid
-* [ ] Ensure ads visually align with BILD style
-
-## Constraints
-
-* [ ] Do not change layout structure
-* [ ] Do not move core components
-* [ ] Do not break interaction patterns
-* [ ] Do not reduce readability
-
-## Goal outcome
-
-A prototype that:
-
-* feels like BILD
-* remains clean and modern
-* still works as a white-label base if needed
+- If user swipes past quickly, the label should not appear
+- Implementation: `setTimeout` of ~1000 ms, cleared on unmount / inactive
+- Applies to: overlay ad label on organic items only
+- Fullscreen ad label ("Anzeige" / "Werbepause") should appear immediately — no delay
+- Keep it simple — no animation required, just a delayed render
 
 ---
 
-# ⚪ Phase 8 - Feed Entry Experience (Optional)
+### P5 — Subtitle timing / progression
 
-* [ ] Add intro / entry state (e.g. "Trending", "For You")
-* [ ] Define transition into feed
+**Make subtitles feel more aligned to the spoken content.**
 
----
-
-# ⚫ Phase 9 - Deployment & Testing
-
-* [ ] Enable local network testing on mobile
-* [ ] Deploy to Vercel
-* [ ] Test on real devices
-* [ ] Share with stakeholders
+- Rotate or cycle through short phrases every ~2–3 seconds rather than showing a single static line
+- This is still prototype-level — no real caption sync required
+- Option: split `captions` string into an array of short phrases, cycle on a timer per active item
+- Reset when item becomes inactive
 
 ---
 
-# 🔔 Reminder - Localisation
+### P6 — Overlay ad creative
 
-* [ ] Translate all UI text from English to German before final handoff
+**Improve the visual quality of overlay ads (lower-third).**
 
-  * Includes: labels, buttons, captions, ad copy, action rail labels, toast messages
-  * Do this last, after all phases are complete
-
----
-
-# 📌 Notes
-
-## Product constraints
-
-* Keep scope tight (MVP)
-* Do not introduce new features outside defined flow
-* Ads must feel integrated, not annoying
-
-## Technical constraints
-
-* Use `VideoPlayer` abstraction
-* Do not block progress on Bitmovin
-* Keep code simple and modular
-
-## UX priorities
-
-* Immersion
-* Clarity
-* Smoothness
-* Monetisation without disruption
+- Replace the 👕 emoji with a styled ad banner (image-like block or a coloured rectangle with brand text)
+- Add a close button (✕) top-right of the overlay card
+- Add a three-dot menu button (⋯) next to the close button
+- Keep layout compact — avoid clutter
+- No click functionality required, just visual presence
 
 ---
 
-# 🚀 Execution Strategy
+### P7 — Display ad layout: content shifts up
 
-Work in phases:
+**When an overlay ad appears, the video content (publisher row, caption, hashtags) should shift upward to make visual room.**
 
-1. Phase 1 → polish
-2. Phase 2 → interactions
-3. Phase 4 → feed structure (CRITICAL)
-4. Phase 5 → ad systems (CRITICAL)
-5. Phase 6 → behaviour polish
-6. Phase 7 → branding
-7. Phase 9 → deploy
+- Ad should sit clearly in the lower third, distinct from metadata
+- No duplicate "Anzeige" label — if the banner has a label, remove any separate label above it
+- No extra UI layered on top of the banner itself
 
-Do not jump ahead or build everything at once.
+---
+
+### P8 — Video CTA / linkout button
+
+**Add an optional per-item CTA button that links out to a relevant destination.**
+
+- Configurable in `feedItems.ts` — add a `linkoutCta?: string` field and `linkoutUrl?: string`
+- Renders as a button on videos that have it set
+- Example: `"Jetzt Tickets sichern"` on a sports/event video
+- Does not need to navigate anywhere — `onClick: () => {}` placeholder is fine
+- Keep styling consistent with existing CTA buttons
+
+---
+
+### P9 — Subtitle/video swap
+
+**Swap which video shows subtitles.**
+
+- The video that currently has subtitles should become the one without
+- Adjust `captions` field in the relevant `feedItems.ts` entry
+- No component changes needed
+
+---
+
+### P10 — Final ad video: ticketing theme
+
+**Update the final fullscreen ad (currently PureFuel protein) to feel more compelling.**
+
+- Change ad copy to a ticketing / event theme (e.g. football event, WM, live sport)
+- Update `advertiser`, `adHeadline`, `adSubline`, `adCta` in `feedItems.ts`
+- The ad remains `isWerbepause: true`
+- This is copy-only — no new video needed
+- Example direction: "WM 2026. Sei dabei." / ticketing platform feel
+
+---
+
+## 5. Nice to Have — Only If Time Remains
+
+These are lower priority. Only pick up if all P1–P10 items above are complete.
+
+- [ ] Werbepause visual feedback on blocked swipe attempt (scale flash or opacity pulse)
+- [ ] Smooth fade-in transition when subtitle text cycles
+- [ ] TopBar back button routes somewhere meaningful
+- [ ] Overlay ad close button actually dismisses the overlay (local state)
+
+---
+
+## 6. Do NOT Work On Today
+
+These are explicitly out of scope for this session.
+
+- ❌ Bitmovin player integration
+- ❌ Backend / API / data fetching
+- ❌ BILD / WELT branding layer
+- ❌ Comments or profile pages
+- ❌ Onboarding flow
+- ❌ Analytics or tracking
+- ❌ Performance optimisation (preloading, lazy loading)
+- ❌ Generic interaction polish with no visible demo impact
+- ❌ Architecture refactoring
+- ❌ Production-grade error handling
+
+---
+
+## Notes
+
+**Execution principle:** prefer fake, mocked, and hardcoded over correct systems. Demo clarity beats technical purity every time in this session.
+
+**Stack:** Vite + React + TypeScript, HTML5 video, mobile web first, no backend.

@@ -90,6 +90,7 @@ export default function VideoFeedItem({
       {/* All overlay UI */}
       <VideoOverlay
         item={item}
+        isActive={isActive}
         isMuted={isMuted}
         onMuteToggle={onMuteToggle}
         onLike={handleLike}

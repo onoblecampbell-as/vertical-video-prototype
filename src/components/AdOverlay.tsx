@@ -23,22 +23,37 @@ export default function AdOverlay({ ad }: Props) {
         // TODO: navigate to ad destination
       }}
     >
-      {/* Ad image placeholder */}
-      <div
-        style={{
-          width: 52,
-          height: 52,
-          borderRadius: 8,
-          background: 'rgba(255,255,255,0.1)',
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 26,
-        }}
-      >
-        👕
-      </div>
+      {/* Ad image / emoji thumbnail */}
+      {ad.overlayImage ? (
+        <img
+          src={ad.overlayImage}
+          alt=""
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: 8,
+            objectFit: 'cover',
+            flexShrink: 0,
+            display: 'block',
+          }}
+        />
+      ) : (
+        <div
+          style={{
+            width: 52,
+            height: 52,
+            borderRadius: 8,
+            background: 'rgba(255,255,255,0.1)',
+            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 26,
+          }}
+        >
+          {ad.emoji ?? '🖼️'}
+        </div>
+      )}
 
       {/* Ad text */}
       <div style={{ flex: 1, minWidth: 0 }}>

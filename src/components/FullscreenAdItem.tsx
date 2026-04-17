@@ -7,11 +7,14 @@ interface Props {
   index: number
   isActive: boolean
   isMuted: boolean
+  onSkip?: () => void
 }
 
-export default function FullscreenAdItem({ item, index, isActive, isMuted }: Props) {
+export default function FullscreenAdItem({ item, index, isActive, isMuted, onSkip }: Props) {
   const [expired, setExpired] = useState(false)
+  const [canSkip, setCanSkip] = useState(false)
 
+  // Werbepause: flip label + text after 3 s
   useEffect(() => {
     if (!item.isWerbepause) return
     setExpired(false)
@@ -19,6 +22,15 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted }: Pro
     const t = setTimeout(() => setExpired(true), 3000)
     return () => clearTimeout(t)
   }, [isActive, item.isWerbepause])
+
+  // Skippable ad: enable skip button after skipAfterSeconds
+  useEffect(() => {
+    if (item.skipAfterSeconds === undefined) return
+    setCanSkip(false)
+    if (!isActive) return
+    const t = setTimeout(() => setCanSkip(true), item.skipAfterSeconds * 1000)
+    return () => clearTimeout(t)
+  }, [isActive, item.skipAfterSeconds])
   return (
     <div
       data-feed-item
@@ -154,10 +166,9 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted }: Pro
           </button>
         )}
 
-        {/* Skip / Werbepause scaffold — interaction wired in Phase 5 */}
+        {/* Skip / Werbepause row */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
           {item.isWerbepause ? (
-            // Werbepause: static circular indicator, Phase 5 will animate + lock scroll
             <div
               style={{
                 display: 'flex',
@@ -201,23 +212,6 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted }: Pro
               </div>
               <span>{expired ? 'Anzeige überspringen ›' : 'Nicht überspringbar'}</span>
             </div>
-          ) : item.skipAfterSeconds !== undefined ? (
-            // Skippable ad: skip button scaffold, Phase 5 will enable after countdown
-            <button
-              style={{
-                background: 'rgba(255,255,255,0.1)',
-                border: '1px solid rgba(255,255,255,0.25)',
-                borderRadius: 6,
-                color: 'rgba(255,255,255,0.55)',
-                fontSize: 12,
-                fontWeight: 600,
-                padding: '7px 14px',
-                cursor: 'default',
-                letterSpacing: '0.03em',
-              }}
-            >
-              Anzeige überspringen ›
-            </button>
           ) : null}
         </div>
       </div>

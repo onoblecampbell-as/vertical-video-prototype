@@ -3,6 +3,8 @@ export interface OverlayAd {
   title: string
   description: string
   cta: string
+  emoji?: string
+  overlayImage?: string
 }
 
 export interface FeedItem {
@@ -27,9 +29,14 @@ export interface FeedItem {
   hasOverlayAd?: boolean
   overlayAd?: OverlayAd
 
-  // Sponsored treatment (on organic items)
-  isSponsored?: boolean
-  cta?: string
+  // Linkout — optional content-continuation CTA (not an ad)
+  hasLinkout?: boolean
+  linkoutCta?: string
+  subtitleUpperThird?: boolean
+
+  // Graphical ad — full-width image docked to the bottom, replaces overlay ad card
+  hasGraphicalAd?: boolean
+  graphicalAdSrc?: string
 
   // Fullscreen ad fields
   advertiser?: string
