@@ -61,28 +61,30 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
         }}
       />
 
-      {/* Top-left: ad type label */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 'calc(env(safe-area-inset-top) + 16px)',
-          right: 16,
-          zIndex: 10,
-          background: 'rgba(255,255,255,0.14)',
-          backdropFilter: 'blur(6px)',
-          WebkitBackdropFilter: 'blur(6px)',
-          border: '1px solid rgba(255,255,255,0.25)',
-          borderRadius: 99,
-          padding: '4px 11px',
-          fontSize: 10,
-          fontWeight: 700,
-          letterSpacing: '0.08em',
-          textTransform: 'uppercase' as const,
-          color: '#fff',
-        }}
-      >
-        {item.isWerbepause && !expired ? 'Werbepause' : 'Anzeige'}
-      </div>
+      {/* Top-right: ad label — skippable ads only */}
+      {!item.isWerbepause && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 'calc(env(safe-area-inset-top) + 16px)',
+            right: 16,
+            zIndex: 10,
+            background: 'rgba(255,255,255,0.14)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            border: '1px solid rgba(255,255,255,0.25)',
+            borderRadius: 99,
+            padding: '4px 11px',
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase' as const,
+            color: '#fff',
+          }}
+        >
+          Anzeige
+        </div>
+      )}
 
       {/* Bottom section: advertiser, headline, subline, CTA, skip scaffold */}
       <div
@@ -166,55 +168,68 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
           </button>
         )}
 
-        {/* Skip / Werbepause row */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
-          {item.isWerbepause ? (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                color: expired ? '#fff' : 'rgba(255,255,255,0.65)',
-                fontSize: 12,
-                fontWeight: 600,
-              }}
-            >
-              <div
-                key={isActive ? 1 : 0}
-                style={{ position: 'relative', width: 40, height: 40, flexShrink: 0 }}
-              >
-                <svg
-                  width="40" height="40"
-                  viewBox="0 0 40 40"
-                  style={{ position: 'absolute', top: 0, left: 0, transform: 'rotate(-90deg)' }}
-                >
-                  {/* Track */}
-                  <circle cx="20" cy="20" r="17" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="2" />
-                  {/* Countdown arc */}
-                  <circle
-                    cx="20" cy="20" r="17"
-                    fill="none"
-                    stroke="#FFD700"
-                    strokeWidth="2"
-                    strokeDasharray="106.81"
-                    strokeDashoffset="0"
-                    strokeLinecap="round"
-                    style={{ animation: isActive ? 'werbepause-countdown 3s linear forwards' : 'none' }}
-                  />
-                </svg>
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 16, color: '#fff',
-                }}>
-                  ⏸
-                </div>
-              </div>
-              <span>{expired ? 'Anzeige überspringen ›' : 'Nicht überspringbar'}</span>
-            </div>
-          ) : null}
-        </div>
       </div>
+
+      {/* Bottom-right: Werbepause pill with embedded countdown */}
+      {item.isWerbepause && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 'calc(env(safe-area-inset-bottom) + 28px)',
+            right: 20,
+            zIndex: 10,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            background: 'rgba(255,255,255,0.14)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            border: '1px solid rgba(255,255,255,0.25)',
+            borderRadius: 99,
+            padding: '6px 12px 6px 8px',
+          }}
+        >
+          {/* Countdown ring — grey outline always visible, yellow drains during countdown */}
+          <div
+            key={isActive ? 1 : 0}
+            style={{ position: 'relative', width: 22, height: 22, flexShrink: 0 }}
+          >
+            <svg
+              width="22" height="22"
+              viewBox="0 0 22 22"
+              style={{ position: 'absolute', top: 0, left: 0, transform: 'rotate(-90deg)' }}
+            >
+              <circle cx="11" cy="11" r="8" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" />
+              {!expired && (
+                <circle
+                  cx="11" cy="11" r="8"
+                  fill="none"
+                  stroke="#FFD700"
+                  strokeWidth="2"
+                  strokeDasharray="50.27"
+                  strokeDashoffset="0"
+                  strokeLinecap="round"
+                  style={{ animation: isActive ? 'werbepause-countdown-small 3s linear forwards' : 'none' }}
+                />
+              )}
+            </svg>
+          </div>
+
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase' as const,
+              color: '#fff',
+              minWidth: 72,
+              textAlign: 'center',
+            }}
+          >
+            {expired ? 'Anzeige' : 'Werbepause'}
+          </span>
+        </div>
+      )}
     </div>
   )
 }

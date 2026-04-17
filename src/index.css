@@ -95,10 +95,16 @@ button {
   animation: toastIn 0.2s ease-out forwards;
 }
 
-/* Werbepause countdown ring */
+/* Werbepause countdown ring (large, legacy) */
 @keyframes werbepause-countdown {
   from { stroke-dashoffset: 0; }
   to   { stroke-dashoffset: 106.81; }
+}
+
+/* Werbepause countdown ring (small, embedded in label pill — r=8, circumference=50.27) */
+@keyframes werbepause-countdown-small {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: 50.27; }
 }
 
 /* Scrollbar hide */
