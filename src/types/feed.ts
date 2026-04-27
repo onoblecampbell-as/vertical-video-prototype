@@ -10,7 +10,8 @@ export interface OverlayAd {
 export interface FeedItem {
   id: string
   type: 'organic' | 'fullscreenAd' | 'carousel'
-  videoSrc?: string // optional: carousel items have no video
+  videoSrc?: string  // optional: carousel items have no video
+  posterSrc?: string // portrait thumbnail shown while video loads
 
   // Organic fields
   publisher?: string

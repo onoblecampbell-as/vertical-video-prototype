@@ -4,6 +4,7 @@ interface Props {
   src: string
   isActive: boolean
   isMuted: boolean
+  poster?: string
 }
 
 /**
@@ -16,7 +17,7 @@ interface Props {
  * The public API (src, isActive, isMuted) is intentionally identical to what
  * a Bitmovin wrapper would accept, so the swap is a drop-in replacement.
  */
-export default function VideoPlayer({ src, isActive, isMuted }: Props) {
+export default function VideoPlayer({ src, isActive, isMuted, poster }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export default function VideoPlayer({ src, isActive, isMuted }: Props) {
     <video
       ref={videoRef}
       src={src}
+      poster={poster}
       loop
       muted={isMuted}
       playsInline
