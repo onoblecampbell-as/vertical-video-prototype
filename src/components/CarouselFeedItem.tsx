@@ -41,6 +41,8 @@ export default function CarouselFeedItem({ item, index }: Props) {
       data-index={index}
       style={{
         position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
         height: '100dvh',
         width: '100%',
         scrollSnapAlign: 'start',
@@ -50,14 +52,14 @@ export default function CarouselFeedItem({ item, index }: Props) {
         flexShrink: 0,
       }}
     >
-      {/* Horizontally scrollable slides */}
+      {/* Horizontally scrollable slides — fills remaining height above bottom panel */}
       <div
         ref={scrollRef}
         className="carousel-slides"
         onScroll={handleScroll}
         style={{
-          position: 'absolute',
-          inset: 0,
+          flex: 1,
+          minHeight: 0,
           display: 'flex',
           overflowX: 'scroll',
           scrollSnapType: 'x mandatory',
@@ -164,29 +166,15 @@ export default function CarouselFeedItem({ item, index }: Props) {
         {currentSlide + 1} / {slides.length}
       </div>
 
-      {/* Bottom gradient for text legibility */}
+      {/* Bottom panel — solid black, visually separates text from swipeable images */}
       <div
         style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.75) 100%)',
-          pointerEvents: 'none',
-          zIndex: 15,
-        }}
-      />
-
-      {/* Publisher + caption — bottom left */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
+          background: '#000',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          paddingTop: 14,
           paddingLeft: 20,
-          paddingRight: 72, // leave room for future action rail
-          paddingBottom: 'calc(env(safe-area-inset-bottom) + 28px)',
-          zIndex: 20,
-          pointerEvents: 'none',
+          paddingRight: 20,
+          paddingBottom: 'calc(env(safe-area-inset-bottom) + 20px)',
         }}
       >
         {item.publisher && (
@@ -195,7 +183,7 @@ export default function CarouselFeedItem({ item, index }: Props) {
               fontSize: 13,
               fontWeight: 700,
               color: '#fff',
-              marginBottom: 6,
+              marginBottom: 5,
               letterSpacing: '-0.01em',
             }}
           >
@@ -219,7 +207,7 @@ export default function CarouselFeedItem({ item, index }: Props) {
             style={{
               marginTop: 6,
               fontSize: 13,
-              color: 'rgba(255,255,255,0.6)',
+              color: 'rgba(255,255,255,0.5)',
               letterSpacing: '-0.01em',
             }}
           >
