@@ -75,7 +75,7 @@ export default function CarouselFeedItem({ item, index }: Props) {
               height: '100%',
               scrollSnapAlign: 'start',
               scrollSnapStop: 'always',
-              background: '#111',
+              background: '#000',
               position: 'relative',
               overflow: 'hidden',
             }}
