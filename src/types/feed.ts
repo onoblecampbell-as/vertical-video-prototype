@@ -9,8 +9,8 @@ export interface OverlayAd {
 
 export interface FeedItem {
   id: string
-  type: 'organic' | 'fullscreenAd'
-  videoSrc: string
+  type: 'organic' | 'fullscreenAd' | 'carousel'
+  videoSrc?: string // optional: carousel items have no video
 
   // Organic fields
   publisher?: string
@@ -45,4 +45,9 @@ export interface FeedItem {
   adCta?: string
   isWerbepause?: boolean
   skipAfterSeconds?: number
+
+  // Carousel fields
+  images?: string[]       // content image paths
+  adImage?: string        // ad image path
+  adAfterIndex?: number   // insert ad before images[adAfterIndex]
 }

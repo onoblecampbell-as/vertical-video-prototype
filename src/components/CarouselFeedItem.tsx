@@ -1,0 +1,232 @@
+import { useState, useRef } from 'react'
+import type { FeedItem } from '../types/feed'
+
+interface Slide {
+  type: 'image' | 'ad'
+  src: string
+}
+
+function buildSlides(item: FeedItem): Slide[] {
+  const images = item.images ?? []
+  const slides: Slide[] = []
+  for (let i = 0; i < images.length; i++) {
+    if (i === item.adAfterIndex && item.adImage) {
+      slides.push({ type: 'ad', src: item.adImage })
+    }
+    slides.push({ type: 'image', src: images[i] })
+  }
+  return slides
+}
+
+interface Props {
+  item: FeedItem
+  index: number
+  isActive: boolean
+}
+
+export default function CarouselFeedItem({ item, index }: Props) {
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const slides = buildSlides(item)
+
+  const handleScroll = () => {
+    const el = scrollRef.current
+    if (!el) return
+    setCurrentSlide(Math.round(el.scrollLeft / el.clientWidth))
+  }
+
+  return (
+    <div
+      data-feed-item
+      data-index={index}
+      style={{
+        position: 'relative',
+        height: '100dvh',
+        width: '100%',
+        scrollSnapAlign: 'start',
+        scrollSnapStop: 'always',
+        overflow: 'hidden',
+        background: '#000',
+        flexShrink: 0,
+      }}
+    >
+      {/* Horizontally scrollable slides */}
+      <div
+        ref={scrollRef}
+        className="carousel-slides"
+        onScroll={handleScroll}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          overflowX: 'scroll',
+          scrollSnapType: 'x mandatory',
+          scrollbarWidth: 'none',
+          touchAction: 'pan-x',
+        }}
+      >
+        {slides.map((slide, i) => (
+          <div
+            key={i}
+            style={{
+              flex: '0 0 100%',
+              height: '100%',
+              scrollSnapAlign: 'start',
+              scrollSnapStop: 'always',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Blurred background fill */}
+            <img
+              src={slide.src}
+              alt=""
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                filter: 'blur(20px)',
+                transform: 'scale(1.1)',
+              }}
+            />
+
+            {/* Sharp centred image */}
+            <div
+              style={{
+                position: 'relative',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 1,
+              }}
+            >
+              <img
+                src={slide.src}
+                alt={slide.type === 'ad' ? 'Anzeige' : `Bild ${i + 1}`}
+                style={{
+                  width: '82%',
+                  aspectRatio: '1 / 1',
+                  objectFit: 'cover',
+                  borderRadius: 8,
+                  display: 'block',
+                }}
+              />
+            </div>
+
+            {/* Ad label — top-left, ad slides only */}
+            {slide.type === 'ad' && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 'calc(env(safe-area-inset-top) + 16px)',
+                  left: 16,
+                  zIndex: 10,
+                  background: 'rgba(0,0,0,0.55)',
+                  backdropFilter: 'blur(6px)',
+                  WebkitBackdropFilter: 'blur(6px)',
+                  borderRadius: 99,
+                  padding: '4px 11px',
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase' as const,
+                  color: '#fff',
+                }}
+              >
+                Anzeige
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Slide counter — top right */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 'calc(env(safe-area-inset-top) + 16px)',
+          right: 16,
+          zIndex: 20,
+          background: 'rgba(0,0,0,0.45)',
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
+          borderRadius: 99,
+          padding: '4px 11px',
+          fontSize: 12,
+          fontWeight: 600,
+          color: '#fff',
+          letterSpacing: '0.04em',
+        }}
+      >
+        {currentSlide + 1} / {slides.length}
+      </div>
+
+      {/* Bottom gradient for text legibility */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.75) 100%)',
+          pointerEvents: 'none',
+          zIndex: 15,
+        }}
+      />
+
+      {/* Publisher + caption — bottom left */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          paddingLeft: 20,
+          paddingRight: 72, // leave room for future action rail
+          paddingBottom: 'calc(env(safe-area-inset-bottom) + 28px)',
+          zIndex: 20,
+          pointerEvents: 'none',
+        }}
+      >
+        {item.publisher && (
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              color: '#fff',
+              marginBottom: 6,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            {item.publisher}
+          </div>
+        )}
+        {item.caption && (
+          <div
+            style={{
+              fontSize: 14,
+              color: 'rgba(255,255,255,0.88)',
+              lineHeight: 1.45,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            {item.caption}
+          </div>
+        )}
+        {item.hashtags && item.hashtags.length > 0 && (
+          <div
+            style={{
+              marginTop: 6,
+              fontSize: 13,
+              color: 'rgba(255,255,255,0.6)',
+              letterSpacing: '-0.01em',
+            }}
+          >
+            {item.hashtags.join(' ')}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

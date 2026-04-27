@@ -1,16 +1,16 @@
 import type { FeedItem } from '../types/feed'
 
-// 10-step loop sequence (items 1–9, then loops back to 1)
+// 10-item loop sequence (loops back to 1)
 // 1  Organic
 // 2  Organic + overlay ad
 // 3  Fullscreen ad — skippable (bank/card themed)
-// 4  Organic
-// 5  Organic + overlay ad + sponsored treatment
-// 6  Organic
-// 7  Fullscreen ad — Werbepause (protein/shake themed)
-// 8  Organic
-// 9  Organic + overlay ad
-// 10 → loop
+// 4  Carousel — photo series with in-carousel ad
+// 5  Organic
+// 6  Organic + overlay ad
+// 7  Organic
+// 8  Fullscreen ad — Werbepause (protein/shake themed)
+// 9  Organic
+// 10 Organic + overlay ad
 
 export const feedItems: FeedItem[] = [
   // 1 — Organic
@@ -59,7 +59,27 @@ export const feedItems: FeedItem[] = [
     skipAfterSeconds: 5,
   },
 
-  // 4 — Organic
+  // 4 — Carousel: editorial photo series with in-carousel ad
+  {
+    id: 'carousel-1',
+    type: 'carousel',
+    publisher: 'Sport BILD',
+    publisherVerified: true,
+    caption: 'Die besten Momente der Saison – in Bildern.',
+    hashtags: ['#Bundesliga', '#Saison2425', '#BestOf'],
+    likes: 18600,
+    shares: 741,
+    images: [
+      '/images/carousels/carousel-1-01.png',
+      '/images/carousels/carousel-1-02.png',
+      '/images/carousels/carousel-1-03.png',
+      '/images/carousels/carousel-1-04.png',
+    ],
+    adImage: '/images/ads/carousel-ad-1.png',
+    adAfterIndex: 2, // ad slot inserted before images[2], i.e. after the 2nd content image
+  },
+
+  // 5 — Organic
   {
     id: 'feed-4',
     type: 'organic',

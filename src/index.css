@@ -107,7 +107,7 @@ button {
   to   { stroke-dashoffset: 50.27; }
 }
 
-/* Scrollbar hide */
+/* Scrollbar hide — vertical feed */
 .feed-container::-webkit-scrollbar {
   display: none;
 }
@@ -115,4 +115,9 @@ button {
 .feed-container {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Scrollbar hide — carousel horizontal scroll */
+.carousel-slides::-webkit-scrollbar {
+  display: none;
 }

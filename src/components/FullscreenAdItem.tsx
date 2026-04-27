@@ -47,7 +47,7 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
       }}
     >
       {/* Video layer */}
-      <VideoPlayer src={item.videoSrc} isActive={isActive} isMuted={isMuted} />
+      <VideoPlayer src={item.videoSrc!} isActive={isActive} isMuted={isMuted} />
 
       {/* Gradient — heavier bottom fade for copy legibility */}
       <div

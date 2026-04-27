@@ -1,11 +1,12 @@
 # Vertical Video Feed — TODO
 
-## 1. Project Goal
+## 1. Project Context
 
-Build a highly engaging vertical video feed prototype for a media publisher (Axel Springer / BILD) demonstrating realistic monetisation behaviour, editorial content, and ad integration.
+Mobile-first vertical video feed prototype for a large media publisher (Axel Springer).
+Simulates TikTok / Instagram Reels UX with editorial content and native ad integration.
 
-**Today's goal:** Improve demo clarity, ad realism, and monetisation storytelling for stakeholder review.
-Not: perfect engineering, production behaviour, or deep refactoring.
+**Current phase:** Phase 7 — Static Carousel Feed Items + In-Carousel Ads
+**Post-CPO demo.** Core video feed, advertising states, and Werbepause are complete and deployed.
 
 ---
 
@@ -17,19 +18,21 @@ Not: perfect engineering, production behaviour, or deep refactoring.
 | Video playback (HTML5) | ✅ Working |
 | Overlay ads | ✅ Working |
 | Fullscreen ads | ✅ Working |
-| Werbepause state | ✅ Working |
+| Werbepause state + countdown | ✅ Working |
 | Scroll lock on Werbepause | ✅ Working |
 | Skip button (skippable ads) | ✅ Working |
+| Werbepause pill (compact bottom-right) | ✅ Working |
+| Infinite loop (5× repeat) | ✅ Working |
+| Linkout CTA buttons | ✅ Working |
 | German UI / copy | ✅ Done |
 | Vercel deployment | ✅ Live |
-| Infinite loop | ❌ Not yet |
-| Sponsored treatment | 🔶 Present but to be removed |
+| Carousel feed items | ❌ Not yet |
 
 ---
 
 ## 3. Completed MVP Phases
 
-These are done. Do not revisit unless there is a visible bug blocking the demo.
+Done. Do not revisit unless there is a visible bug blocking a demo.
 
 - ✅ **Phase 1** — Core UX: subtitle alignment, action rail, overlay layout, caption readability
 - ✅ **Phase 2** — Interactions: like (tap + double-tap), share (native + clipboard), sound toggle
@@ -40,123 +43,101 @@ These are done. Do not revisit unless there is a visible bug blocking the demo.
 
 ---
 
-## 4. Today's Priority Demo Refinements
+## 4. Pre-CPO Demo Refinements (Reference)
 
-Work through these in order. Stop when time runs out — lower-numbered items have higher demo impact.
+These were completed or worked on before the CPO demo. Listed for historical reference.
 
----
-
-### ✅ P1 — Infinite loop
-
-Feed repeats 5× (45 items) with unique keys. Scroll lock modulo fixed for Werbepause across loops.
-
----
-
-### ✅ P2 — Remove sponsored treatment
-
-`isSponsored` removed. Replaced with `hasLinkout` / `linkoutCta` pattern on feed-1 and feed-9. "Gesponsert" badge and sponsored CTA gone from VideoOverlay.
+- ✅ P1 — Infinite loop (5× feed repeat, modulo-safe Werbepause)
+- ✅ P2 — Remove sponsored treatment (`isSponsored` removed, `hasLinkout` pattern)
+- ✅ P3 — Fullscreen ad: remove "skip ad" label
+- ✅ P4 — Overlay ad label: delayed appearance (1s timeout, cleared on swipe)
+- ✅ Werbepause pill: compact bottom-right, embedded countdown ring, auto-hide after 3s
 
 ---
 
-### ✅ P3 — Fullscreen ad 1: remove "skip ad" label
+## 5. Phase 7 — Static Carousel Feed Items + In-Carousel Ads
 
-Skip button UI removed from `FullscreenAdItem`. `canSkip` / `onSkip` logic kept intact.
+**Goal:** Add a new `"carousel"` feed item type. User vertically swipes through the main feed as normal. When landing on a carousel item, they horizontally swipe through static images. One optional ad card can be inserted between images (monetisation concept).
 
----
+### Data model
 
-### ✅ P4 — Ad label: delayed appearance (organic overlay only)
+- [ ] Add `"carousel"` to the feed item type union in `feedItems.ts`
+- [ ] Define `CarouselSlide` type: `{ type: "image" | "ad", src: string, alt?: string, adLabel?: string }`
+- [ ] Add `slides: CarouselSlide[]` field on carousel items
+- [ ] Add one demo carousel item to the feed sequence (position 3 or 4 in the loop)
+- [ ] Add one in-carousel ad slide after image 3 (ad card with `type: "ad"`)
 
-**The overlay ad label ("Anzeige") on organic videos should appear 1 second after the video comes into view — only if the user stays.**
+### Assets
 
-- If user swipes past quickly, the label should not appear
-- Implementation: `setTimeout` of ~1000 ms, cleared on unmount / inactive
-- Applies to: overlay ad label on organic items only
-- Fullscreen ad label ("Anzeige" / "Werbepause") should appear immediately — no delay
-- Keep it simple — no animation required, just a delayed render
+- [ ] Add 4–5 placeholder static images to `/public/images/carousels/`
+- [ ] Add one ad image/card to `/public/images/ads/` (or use a styled placeholder)
+- [ ] Assets can be freely downloaded editorial photos or generated placeholders — no branding
 
----
+### CarouselFeedItem component
 
-### P5 — Subtitle timing / progression
+- [ ] Create `src/components/CarouselFeedItem.tsx`
+- [ ] Full-screen item, same height/width contract as `VideoFeedItem`
+- [ ] Horizontal CSS scroll-snap-x for slide navigation — no gesture library
+- [ ] Each slide fills the full item viewport
+- [ ] Pagination indicator: slide counter top-right (`2 / 5` style, as seen in reference)
+- [ ] Caption / title text overlay on the first slide (or configurable per-item)
+- [ ] Action rail (like/share) consistent with video items — reuse `ActionRail`
 
-**Make subtitles feel more aligned to the spoken content.**
+### Ad slide treatment
 
-- Rotate or cycle through short phrases every ~2–3 seconds rather than showing a single static line
-- This is still prototype-level — no real caption sync required
-- Option: split `captions` string into an array of short phrases, cycle on a timer per active item
-- Reset when item becomes inactive
+- [ ] Ad slide uses a clearly different background (e.g. white or light grey card)
+- [ ] "Anzeige" label — small, top-left of the ad slide
+- [ ] Visually native in layout but still distinguishable at a glance
+- [ ] No click tracking, no real CTA required — placeholder button is fine
 
----
+### Feed integration
 
-### P6 — Overlay ad creative
+- [ ] Render `CarouselFeedItem` when `item.type === "carousel"` in `VideoFeed` or feed router
+- [ ] Vertical snap scrolling must continue to work across all item types
+- [ ] Entering / leaving a carousel item must not break scroll momentum
+- [ ] Carousel horizontal scroll must not accidentally trigger vertical feed swipe
 
-**Improve the visual quality of overlay ads (lower-third).**
+### Not in scope
 
-- Replace the 👕 emoji with a styled ad banner (image-like block or a coloured rectangle with brand text)
-- Add a close button (✕) top-right of the overlay card
-- Add a three-dot menu button (⋯) next to the close button
-- Keep layout compact — avoid clutter
-- No click functionality required, just visual presence
-
----
-
-### P7 — Display ad layout: content shifts up
-
-**When an overlay ad appears, the video content (publisher row, caption, hashtags) should shift upward to make visual room.**
-
-- Ad should sit clearly in the lower third, distinct from metadata
-- No duplicate "Anzeige" label — if the banner has a label, remove any separate label above it
-- No extra UI layered on top of the banner itself
-
----
-
-### P8 — Video CTA / linkout button
-
-**Add an optional per-item CTA button that links out to a relevant destination.**
-
-- Configurable in `feedItems.ts` — add a `linkoutCta?: string` field and `linkoutUrl?: string`
-- Renders as a button on videos that have it set
-- Example: `"Jetzt Tickets sichern"` on a sports/event video
-- Does not need to navigate anywhere — `onClick: () => {}` placeholder is fine
-- Keep styling consistent with existing CTA buttons
+- ❌ Gesture library (e.g. Framer Motion, use-gesture) — CSS snap only
+- ❌ Video inside carousel slides
+- ❌ Real ad tracking or impression logging
+- ❌ Upload or CMS flow
+- ❌ Backend integration
+- ❌ Auto-advance timer
 
 ---
 
-### P9 — Subtitle/video swap
+## 6. Implementation Approach
 
-**Swap which video shows subtitles.**
+### Horizontal scroll strategy
 
-- The video that currently has subtitles should become the one without
-- Adjust `captions` field in the relevant `feedItems.ts` entry
-- No component changes needed
+Use `overflow-x: scroll` + `scroll-snap-type: x mandatory` on the slides container.
+Each slide is `min-width: 100%` + `scroll-snap-align: start`.
 
----
+This avoids any touch gesture library and works natively on mobile web.
+The container is positioned absolutely inside the feed item to match `VideoFeedItem` sizing.
 
-### P10 — Final ad video: ticketing theme
+### Preventing scroll conflicts
 
-**Update the final fullscreen ad (currently PureFuel protein) to feel more compelling.**
+The vertical feed uses `overflow-y: scroll` + `scroll-snap-type: y mandatory` on the outer container.
+CSS handles the axis disambiguation natively — horizontal touch starts on a horizontal scroller do not propagate to the vertical parent.
+No `touch-action` overrides should be needed unless testing reveals conflict.
 
-- Change ad copy to a ticketing / event theme (e.g. football event, WM, live sport)
-- Update `advertiser`, `adHeadline`, `adSubline`, `adCta` in `feedItems.ts`
-- The ad remains `isWerbepause: true`
-- This is copy-only — no new video needed
-- Example direction: "WM 2026. Sei dabei." / ticketing platform feel
+### Pagination indicator
 
----
+Simple `currentSlide / totalSlides` counter, updated via `onScroll` listener (or `IntersectionObserver` on slides).
+Top-right position, small semi-transparent text, consistent with reference image style.
 
-## 5. Nice to Have — Only If Time Remains
+### Component boundary
 
-These are lower priority. Only pick up if all P1–P10 items above are complete.
-
-- [ ] Werbepause visual feedback on blocked swipe attempt (scale flash or opacity pulse)
-- [ ] Smooth fade-in transition when subtitle text cycles
-- [ ] TopBar back button routes somewhere meaningful
-- [ ] Overlay ad close button actually dismisses the overlay (local state)
+`CarouselFeedItem` is a new component peer to `VideoFeedItem` and `FullscreenAdItem`.
+It receives the full carousel feed item object as a prop.
+No shared state with the video player. No playback logic.
 
 ---
 
-## 6. Do NOT Work On Today
-
-These are explicitly out of scope for this session.
+## 7. Out of Scope (This Session)
 
 - ❌ Bitmovin player integration
 - ❌ Backend / API / data fetching
@@ -164,15 +145,13 @@ These are explicitly out of scope for this session.
 - ❌ Comments or profile pages
 - ❌ Onboarding flow
 - ❌ Analytics or tracking
-- ❌ Performance optimisation (preloading, lazy loading)
-- ❌ Generic interaction polish with no visible demo impact
+- ❌ Performance optimisation
 - ❌ Architecture refactoring
-- ❌ Production-grade error handling
 
 ---
 
 ## Notes
 
-**Execution principle:** prefer fake, mocked, and hardcoded over correct systems. Demo clarity beats technical purity every time in this session.
+**Execution principle:** prefer fake, mocked, and hardcoded over correct systems. Demo clarity beats technical purity.
 
 **Stack:** Vite + React + TypeScript, HTML5 video, mobile web first, no backend.

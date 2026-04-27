@@ -60,7 +60,7 @@ export default function VideoFeedItem({
       }}
     >
       {/* Video layer */}
-      <VideoPlayer src={item.videoSrc} isActive={isActive} isMuted={isMuted} />
+      <VideoPlayer src={item.videoSrc!} isActive={isActive} isMuted={isMuted} />
 
       {/* Tap-capture area (sits above video, below overlay buttons) */}
       <div

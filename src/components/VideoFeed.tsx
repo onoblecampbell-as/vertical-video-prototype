@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import { feedItems } from '../data/feedItems'
 import VideoFeedItem from './VideoFeedItem'
 import FullscreenAdItem from './FullscreenAdItem'
+import CarouselFeedItem from './CarouselFeedItem'
 import type { FeedItem } from '../types/feed'
 
 // Repeat the sequence to create an effectively infinite feed for demo purposes
@@ -116,6 +117,13 @@ export default function VideoFeed() {
             isActive={activeIndex === index}
             isMuted={isMuted}
             onSkip={handleSkip}
+          />
+        ) : item.type === 'carousel' ? (
+          <CarouselFeedItem
+            key={key}
+            item={item}
+            index={index}
+            isActive={activeIndex === index}
           />
         ) : (
           <VideoFeedItem
