@@ -75,48 +75,22 @@ export default function CarouselFeedItem({ item, index }: Props) {
               height: '100%',
               scrollSnapAlign: 'start',
               scrollSnapStop: 'always',
+              background: '#111',
               position: 'relative',
               overflow: 'hidden',
             }}
           >
-            {/* Blurred background fill */}
+            {/* Single contained image — no background blur, no cropping */}
             <img
               src={slide.src}
-              alt=""
+              alt={slide.type === 'ad' ? 'Anzeige' : `Bild ${i + 1}`}
               style={{
-                position: 'absolute',
-                inset: 0,
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover',
-                filter: 'blur(20px)',
-                transform: 'scale(1.1)',
+                objectFit: 'contain',
+                display: 'block',
               }}
             />
-
-            {/* Sharp centred image */}
-            <div
-              style={{
-                position: 'relative',
-                height: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 1,
-              }}
-            >
-              <img
-                src={slide.src}
-                alt={slide.type === 'ad' ? 'Anzeige' : `Bild ${i + 1}`}
-                style={{
-                  width: '82%',
-                  aspectRatio: '1 / 1',
-                  objectFit: 'cover',
-                  borderRadius: 8,
-                  display: 'block',
-                }}
-              />
-            </div>
 
             {/* Ad label — top-left, ad slides only */}
             {slide.type === 'ad' && (
