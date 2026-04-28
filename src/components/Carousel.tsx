@@ -25,8 +25,16 @@ interface Slide {
   isAd: boolean
 }
 
+const CAROUSEL_FOLDER: Record<CarouselCategory, string> = {
+  marathon:  'marathon-test',
+  horoskop:  'horoskop',
+  nutrition: 'nutrition',
+  artemis:   'artemis',
+  timmy:     'timmy',
+}
+
 function buildSlides(category: CarouselCategory): Slide[] {
-  const base = `/images/carousels/${category}/`
+  const base = `/images/carousels/${CAROUSEL_FOLDER[category]}/`
   return [
     { src: `${base}${category}-1.png`, isAd: false },
     { src: `${base}${category}-2.png`, isAd: false },
