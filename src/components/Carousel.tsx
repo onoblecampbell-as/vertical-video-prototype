@@ -138,12 +138,11 @@ export default function Carousel({ category, index, isActive }: Props) {
               overflow: 'hidden',
             }}
           >
-            {/* 4:5 media frame — as large as possible, never cropped */}
+            {/* 4:5 media frame — full device width, height from aspect ratio */}
             <div
               style={{
+                width: '100%',
                 aspectRatio: '4 / 5',
-                maxWidth: '100%',
-                maxHeight: '100%',
                 position: 'relative',
                 overflow: 'hidden',
                 flexShrink: 0,
