@@ -142,9 +142,9 @@ export default function Carousel({ category, index, isActive }: Props) {
                 alt={slide.isAd ? 'Anzeige' : `${label} ${i + 1}`}
                 loading="lazy"
                 style={{
-                  width: 'calc(100% - 24px)',
+                  width: '100%',
                   height: '100%',
-                  objectFit: 'contain',
+                  objectFit: 'cover',
                   display: 'block',
                 }}
               />
