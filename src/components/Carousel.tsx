@@ -6,6 +6,20 @@ import { HeartIcon, ShareIcon } from './icons'
 // Session-level flag — hint shown once across all carousel instances
 let hintHasBeenShown = false
 
+function formatCount(n: number) {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`
+  return String(n)
+}
+
+const CAROUSEL_STATS: Record<CarouselCategory, { likes: number; shares: number }> = {
+  marathon:  { likes: 8700,  shares: 312 },
+  horoskop:  { likes: 11300, shares: 447 },
+  nutrition: { likes: 6400,  shares: 218 },
+  artemis:   { likes: 9200,  shares: 376 },
+  timmy:     { likes: 14100, shares: 589 },
+}
+
 interface Slide {
   src: string
   isAd: boolean
@@ -36,6 +50,7 @@ export default function Carousel({ category, index, isActive }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const slides = buildSlides(category)
   const label = CAROUSEL_LABELS[category]
+  const stats = CAROUSEL_STATS[category]
 
   // Show ghost hint on first-ever carousel exposure
   useEffect(() => {
@@ -317,6 +332,9 @@ export default function Carousel({ category, index, isActive }: Props) {
             <span className={liked ? 'heart-pop' : ''}>
               <HeartIcon filled={liked} />
             </span>
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>
+              {formatCount(stats.likes + (liked ? 1 : 0))}
+            </span>
           </button>
           <button
             onClick={handleShare}
@@ -335,6 +353,9 @@ export default function Carousel({ category, index, isActive }: Props) {
             aria-label="Teilen"
           >
             <ShareIcon />
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>
+              {formatCount(stats.shares)}
+            </span>
           </button>
         </div>
       </div>
