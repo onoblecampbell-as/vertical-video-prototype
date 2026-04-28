@@ -102,6 +102,7 @@ export default function VideoFeed() {
               key={r.key}
               category={r.category}
               index={r.index}
+              isActive={activeIndex === r.index}
             />
           )
         }

@@ -1,7 +1,10 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import type { CarouselCategory } from '../hooks/useCarouselFeed'
 import { CAROUSEL_LABELS } from '../hooks/useCarouselFeed'
 import { HeartIcon, ShareIcon } from './icons'
+
+// Session-level flag — hint shown once across all carousel instances
+let hintHasBeenShown = false
 
 interface Slide {
   src: string
@@ -22,20 +25,32 @@ function buildSlides(category: CarouselCategory): Slide[] {
 interface Props {
   category: CarouselCategory
   index: number
+  isActive: boolean
 }
 
-export default function Carousel({ category, index }: Props) {
+export default function Carousel({ category, index, isActive }: Props) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [liked, setLiked] = useState(false)
   const [shareFlash, setShareFlash] = useState(false)
+  const [hintVisible, setHintVisible] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const slides = buildSlides(category)
   const label = CAROUSEL_LABELS[category]
+
+  // Show ghost hint on first-ever carousel exposure
+  useEffect(() => {
+    if (!isActive || hintHasBeenShown) return
+    hintHasBeenShown = true
+    setHintVisible(true)
+    const t = setTimeout(() => setHintVisible(false), 2000)
+    return () => clearTimeout(t)
+  }, [isActive])
 
   const handleScroll = () => {
     const el = scrollRef.current
     if (!el) return
     setCurrentSlide(Math.round(el.scrollLeft / el.clientWidth))
+    if (hintVisible) setHintVisible(false)
   }
 
   const handleShare = useCallback(() => {
@@ -66,97 +81,154 @@ export default function Carousel({ category, index }: Props) {
         flexShrink: 0,
       }}
     >
-      {/* Horizontally scrollable slides */}
+      {/* Slides wrapper — position:relative so hint can anchor to its bottom */}
+      <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
+        {/* Horizontally scrollable slides */}
+        <div
+          ref={scrollRef}
+          className="carousel-slides"
+          onScroll={handleScroll}
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            overflowX: 'scroll',
+            scrollSnapType: 'x mandatory',
+            scrollbarWidth: 'none',
+            touchAction: 'pan-x',
+          }}
+        >
+          {slides.map((slide, i) => (
+            <div
+              key={i}
+              style={{
+                flex: '0 0 100%',
+                height: '100%',
+                scrollSnapAlign: 'start',
+                scrollSnapStop: 'always',
+                background: '#000',
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <img
+                src={slide.src}
+                alt={slide.isAd ? 'Anzeige' : `${label} ${i + 1}`}
+                loading="lazy"
+                style={{
+                  width: 'calc(100% - 24px)',
+                  height: '100%',
+                  objectFit: 'contain',
+                  display: 'block',
+                }}
+              />
+
+              {/* Category badge — first slide only */}
+              {i === 0 && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(env(safe-area-inset-top) + 16px)',
+                    left: 16,
+                    zIndex: 10,
+                    background: 'rgba(0,0,0,0.55)',
+                    backdropFilter: 'blur(6px)',
+                    WebkitBackdropFilter: 'blur(6px)',
+                    borderRadius: 99,
+                    padding: '4px 11px',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase' as const,
+                    color: '#fff',
+                  }}
+                >
+                  {label}
+                </div>
+              )}
+
+              {/* Ad label — ad slide only */}
+              {slide.isAd && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(env(safe-area-inset-top) + 16px)',
+                    left: 16,
+                    zIndex: 10,
+                    background: 'rgba(0,0,0,0.55)',
+                    backdropFilter: 'blur(6px)',
+                    WebkitBackdropFilter: 'blur(6px)',
+                    borderRadius: 99,
+                    padding: '4px 11px',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase' as const,
+                    color: '#fff',
+                  }}
+                >
+                  Anzeige
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Ghost swipe hint — first carousel exposure only, fades after 2s or on scroll */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 12,
+            left: 0,
+            right: 0,
+            textAlign: 'center',
+            pointerEvents: 'none',
+            zIndex: 5,
+            opacity: hintVisible ? 1 : 0,
+            transition: 'opacity 0.4s ease',
+          }}
+        >
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 500,
+              color: 'rgba(255,255,255,0.5)',
+              letterSpacing: '0.04em',
+            }}
+          >
+            Wische →
+          </span>
+        </div>
+      </div>
+
+      {/* Pagination dots */}
       <div
-        ref={scrollRef}
-        className="carousel-slides"
-        onScroll={handleScroll}
         style={{
-          flex: 1,
-          minHeight: 0,
+          height: 24,
           display: 'flex',
-          overflowX: 'scroll',
-          scrollSnapType: 'x mandatory',
-          scrollbarWidth: 'none',
-          touchAction: 'pan-x',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 7,
+          background: '#000',
+          flexShrink: 0,
+          pointerEvents: 'none',
         }}
       >
-        {slides.map((slide, i) => (
+        {slides.map((_, i) => (
           <div
             key={i}
             style={{
-              flex: '0 0 100%',
-              height: '100%',
-              scrollSnapAlign: 'start',
-              scrollSnapStop: 'always',
-              background: '#000',
-              position: 'relative',
-              overflow: 'hidden',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              width: i === currentSlide ? 8 : 6,
+              height: i === currentSlide ? 8 : 6,
+              borderRadius: '50%',
+              background: i === currentSlide ? '#fff' : 'rgba(255,255,255,0.3)',
+              transition: 'all 0.2s ease',
+              flexShrink: 0,
             }}
-          >
-            <img
-              src={slide.src}
-              alt={slide.isAd ? 'Anzeige' : `${label} ${i + 1}`}
-              loading="lazy"
-              style={{
-                width: 'calc(100% - 24px)',
-                height: '100%',
-                objectFit: 'contain',
-                display: 'block',
-              }}
-            />
-
-            {/* Category badge — first slide only */}
-            {i === 0 && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 'calc(env(safe-area-inset-top) + 16px)',
-                  left: 16,
-                  zIndex: 10,
-                  background: 'rgba(0,0,0,0.55)',
-                  backdropFilter: 'blur(6px)',
-                  WebkitBackdropFilter: 'blur(6px)',
-                  borderRadius: 99,
-                  padding: '4px 11px',
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase' as const,
-                  color: '#fff',
-                }}
-              >
-                {label}
-              </div>
-            )}
-
-            {/* Ad label — ad slide only */}
-            {slide.isAd && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 'calc(env(safe-area-inset-top) + 16px)',
-                  left: 16,
-                  zIndex: 10,
-                  background: 'rgba(0,0,0,0.55)',
-                  backdropFilter: 'blur(6px)',
-                  WebkitBackdropFilter: 'blur(6px)',
-                  borderRadius: 99,
-                  padding: '4px 11px',
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase' as const,
-                  color: '#fff',
-                }}
-              >
-                Anzeige
-              </div>
-            )}
-          </div>
+          />
         ))}
       </div>
 
