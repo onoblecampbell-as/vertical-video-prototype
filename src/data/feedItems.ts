@@ -1,16 +1,15 @@
 import type { FeedItem } from '../types/feed'
 
-// 10-item loop sequence
+// 9-item base loop — carousels are injected dynamically by useCarouselFeed
 // 1  Organic — sport (linkout)
 // 2  Organic + graphical ad — entertainment (Hochkant)
 // 3  Fullscreen ad — skippable (NeoBank)
-// 4  Carousel — photo series with in-carousel ad
-// 5  Organic — news
-// 6  Organic + overlay ad — entertainment (Hochkant)
-// 7  Organic — entertainment (Hochkant)
-// 8  Fullscreen ad — Werbepause (PureFuel)
-// 9  Organic — news (Hochkant)
-// 10 Organic + overlay ad — news (linkout)
+// 4  Organic — news
+// 5  Organic + overlay ad — entertainment (Hochkant)
+// 6  Organic — entertainment (Hochkant)
+// 7  Fullscreen ad — Werbepause (PureFuel)
+// 8  Organic — news (Hochkant)
+// 9  Organic + overlay ad — news (linkout)
 //
 // Video source: BILD Outbrain feed (public/feeds/outbrain-videos.xml)
 // Video URLs:   https://hds.ak.token.bild.de/{guid},delivery=pmd  (progressive MP4)
@@ -63,27 +62,7 @@ export const feedItems: FeedItem[] = [
     skipAfterSeconds: 5,
   },
 
-  // 4 — Carousel: editorial photo series with in-carousel ad
-  {
-    id: 'carousel-1',
-    type: 'carousel',
-    publisher: 'Sport BILD',
-    publisherVerified: true,
-    caption: 'Die besten Momente der Saison – in Bildern.',
-    hashtags: ['#Bundesliga', '#Saison2425', '#BestOf'],
-    likes: 18600,
-    shares: 741,
-    images: [
-      '/images/carousels/carousel-1-01.png',
-      '/images/carousels/carousel-1-02.png',
-      '/images/carousels/carousel-1-03.png',
-      '/images/carousels/carousel-1-04.png',
-    ],
-    adImage: '/images/ads/carousel-ad-1.png',
-    adAfterIndex: 2,
-  },
-
-  // 5 — Organic: Ship fire on Saarland highway
+  // 4 — Organic: Ship fire on Saarland highway
   {
     id: '69eef5ad161d963ca5f22bd8',
     type: 'organic',
