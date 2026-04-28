@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import type { CarouselCategory } from '../hooks/useCarouselFeed'
 import { CAROUSEL_LABELS } from '../hooks/useCarouselFeed'
+import { HeartIcon, ShareIcon } from './icons'
 
 interface Slide {
   src: string
@@ -25,6 +26,8 @@ interface Props {
 
 export default function Carousel({ category, index }: Props) {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [liked, setLiked] = useState(false)
+  const [shareFlash, setShareFlash] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const slides = buildSlides(category)
   const label = CAROUSEL_LABELS[category]
@@ -34,6 +37,17 @@ export default function Carousel({ category, index }: Props) {
     if (!el) return
     setCurrentSlide(Math.round(el.scrollLeft / el.clientWidth))
   }
+
+  const handleShare = useCallback(() => {
+    setShareFlash(true)
+    setTimeout(() => setShareFlash(false), 600)
+    const url = window.location.href
+    if (navigator.share) {
+      navigator.share({ title: label, url }).catch(() => {})
+    } else {
+      navigator.clipboard.writeText(url).catch(() => {})
+    }
+  }, [label])
 
   return (
     <div
@@ -173,30 +187,83 @@ export default function Carousel({ category, index }: Props) {
           background: '#000',
           borderTop: '1px solid rgba(255,255,255,0.1)',
           paddingTop: 14,
-          paddingLeft: 20,
-          paddingRight: 20,
           paddingBottom: 'calc(env(safe-area-inset-bottom) + 20px)',
+          display: 'flex',
+          alignItems: 'center',
         }}
       >
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 700,
-            color: '#fff',
-            marginBottom: 5,
-            letterSpacing: '-0.01em',
-          }}
-        >
-          {label}
+        {/* Text column */}
+        <div style={{ flex: 1, paddingLeft: 20, paddingRight: 12 }}>
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              color: '#fff',
+              marginBottom: 5,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            {label}
+          </div>
+          <div
+            style={{
+              fontSize: 14,
+              color: 'rgba(255,255,255,0.6)',
+              letterSpacing: '-0.01em',
+            }}
+          >
+            {slides.length} Bilder · Wische zum Entdecken
+          </div>
         </div>
+
+        {/* Action rail */}
         <div
           style={{
-            fontSize: 14,
-            color: 'rgba(255,255,255,0.6)',
-            letterSpacing: '-0.01em',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 18,
+            paddingRight: 16,
           }}
         >
-          {slides.length} Bilder · Wische zum Entdecken
+          <button
+            onClick={() => setLiked((p) => !p)}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 4,
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: liked ? '#ff4757' : '#fff',
+              padding: 4,
+              transition: 'color 0.15s',
+            }}
+            aria-label="Like"
+          >
+            <span className={liked ? 'heart-pop' : ''}>
+              <HeartIcon filled={liked} />
+            </span>
+          </button>
+          <button
+            onClick={handleShare}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 4,
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: shareFlash ? 'rgba(255,255,255,0.5)' : '#fff',
+              padding: 4,
+              transition: 'color 0.15s',
+            }}
+            aria-label="Teilen"
+          >
+            <ShareIcon />
+          </button>
         </div>
       </div>
     </div>
