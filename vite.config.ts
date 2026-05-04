@@ -9,5 +9,12 @@ export default defineConfig({
       // Allow serving files from the project root (needed for symlinked /ref/media)
       allow: ['.'],
     },
+    proxy: {
+      '/api/feed': {
+        target: 'https://www.bild.de',
+        changeOrigin: true,
+        rewrite: () => '/feed/vWNdvZIMOpf9PqfTGWIj',
+      },
+    },
   },
 })

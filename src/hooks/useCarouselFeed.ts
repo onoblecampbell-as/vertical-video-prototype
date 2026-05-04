@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { feedItems } from '../data/feedItems'
 import type { FeedItem } from '../types/feed'
 
 export const CAROUSEL_CATEGORIES = [
@@ -28,7 +27,7 @@ export type RenderItem =
 const ORGANIC_INTERVAL = 5
 const LOOP_COUNT = 5
 
-function buildFeed(): RenderItem[] {
+function buildFeed(feedItems: FeedItem[]): RenderItem[] {
   const result: RenderItem[] = []
   let globalIndex = 0
   let organicCount = 0
@@ -54,7 +53,6 @@ function buildFeed(): RenderItem[] {
   return result
 }
 
-export function useCarouselFeed() {
-  // memoised for the lifetime of the session — feed is static
-  return useMemo(buildFeed, [])
+export function useCarouselFeed(feedItems: FeedItem[]) {
+  return useMemo(() => buildFeed(feedItems), [feedItems])
 }

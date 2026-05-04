@@ -9,7 +9,7 @@ export interface OverlayAd {
 
 export interface FeedItem {
   id: string
-  type: 'organic' | 'fullscreenAd' | 'carousel'
+  type: 'organic' | 'fullscreenAd' | 'carousel' | 'scrollRevealAd'
   videoSrc?: string  // optional: carousel items have no video
   posterSrc?: string // portrait thumbnail shown while video loads
 
@@ -51,4 +51,8 @@ export interface FeedItem {
   images?: string[]       // content image paths
   adImage?: string        // ad image path
   adAfterIndex?: number   // insert ad before images[adAfterIndex]
+
+  // ScrollRevealAd fields
+  imageSrc?: string                            // static image creative
+  viewportSize?: 'mrec' | 'large' | 'full'    // ad window height
 }

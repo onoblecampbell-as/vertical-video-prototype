@@ -1,7 +1,9 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useCarouselFeed } from '../hooks/useCarouselFeed'
+import { useFeedItems } from '../hooks/useFeedItems'
 import VideoFeedItem from './VideoFeedItem'
 import FullscreenAdItem from './FullscreenAdItem'
+import ScrollRevealAd from './ScrollRevealAd'
 import Carousel from './Carousel'
 
 export default function VideoFeed() {
@@ -10,7 +12,8 @@ export default function VideoFeed() {
   const [isMuted, setIsMuted] = useState(true)
   const [scrollLocked, setScrollLocked] = useState(false)
 
-  const renderItems = useCarouselFeed()
+  const { items, loading, error } = useFeedItems()
+  const renderItems = useCarouselFeed(items)
 
   const handleMuteToggle = useCallback(() => setIsMuted((prev) => !prev), [])
 
@@ -80,7 +83,15 @@ export default function VideoFeed() {
     items.forEach((el) => observer.observe(el))
 
     return () => observer.disconnect()
-  }, [])
+  }, [renderItems])
+
+  if (loading || error) {
+    return (
+      <div style={{ position: 'fixed', inset: 0, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {error && <p style={{ color: '#fff', fontSize: 14, opacity: 0.5 }}>Feed konnte nicht geladen werden.</p>}
+      </div>
+    )
+  }
 
   return (
     <div
@@ -120,6 +131,10 @@ export default function VideoFeed() {
               onSkip={handleSkip}
             />
           )
+        }
+
+        if (item.type === 'scrollRevealAd') {
+          return <ScrollRevealAd key={key} item={item} index={index} isActive={activeIndex === index} />
         }
 
         return (
