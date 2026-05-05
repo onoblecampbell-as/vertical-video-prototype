@@ -165,10 +165,13 @@ export default function Carousel({ category, index, isActive }: Props) {
           style={{
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'center',
             gap: 8,
             background: '#fff',
             borderRadius: 24,
-            padding: '8px 12px',
+            padding: '0 12px',
+            height: 40,
+            minWidth: 120,
           }}
         >
           {slides[currentSlide]?.isAd ? (
