@@ -55,6 +55,7 @@ export default function Carousel({ category, index, isActive }: Props) {
   const [liked, setLiked] = useState(false)
   const [shareFlash, setShareFlash] = useState(false)
   const [hintVisible, setHintVisible] = useState(false)
+  const [indicatorVisible, setIndicatorVisible] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const slides = buildSlides(category)
   const label = CAROUSEL_LABELS[category]
@@ -69,11 +70,23 @@ export default function Carousel({ category, index, isActive }: Props) {
     return () => clearTimeout(t)
   }, [isActive])
 
+  // Show swipe indicator on every activation, auto-dismiss after 2.5s
+  useEffect(() => {
+    if (!isActive) {
+      setIndicatorVisible(false)
+      return
+    }
+    setIndicatorVisible(true)
+    const t = setTimeout(() => setIndicatorVisible(false), 2500)
+    return () => clearTimeout(t)
+  }, [isActive])
+
   const handleScroll = () => {
     const el = scrollRef.current
     if (!el) return
     setCurrentSlide(Math.round(el.scrollLeft / el.clientWidth))
     if (hintVisible) setHintVisible(false)
+    if (indicatorVisible) setIndicatorVisible(false)
   }
 
   const handleShare = useCallback(() => {
@@ -95,19 +108,19 @@ export default function Carousel({ category, index, isActive }: Props) {
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
-        height: '100dvh',
-        width: '100%',
+        height: 'calc(100dvh - env(safe-area-inset-top) - 94px)',
+        width: 'calc(100% - 16px)',
+        margin: '0 auto',
         scrollSnapAlign: 'start',
         scrollSnapStop: 'always',
         overflow: 'hidden',
         background: '#111',
         flexShrink: 0,
+        borderRadius: 24,
+        marginBottom: 12,
       }}
     >
-      {/* Header spacer — clears status bar + slide counter */}
-      <div style={{ height: 'calc(env(safe-area-inset-top) + 48px)', flexShrink: 0 }} />
-
-      {/* Horizontally scrollable slides — fills remaining vertical space */}
+      {/* Horizontally scrollable slides — fills full card height */}
       <div
         ref={scrollRef}
         className="carousel-slides"
@@ -120,6 +133,7 @@ export default function Carousel({ category, index, isActive }: Props) {
           scrollSnapType: 'x mandatory',
           scrollbarWidth: 'none',
           touchAction: 'pan-x',
+          position: 'relative',
         }}
       >
         {slides.map((slide, i) => (
@@ -130,114 +144,75 @@ export default function Carousel({ category, index, isActive }: Props) {
               height: '100%',
               scrollSnapAlign: 'start',
               scrollSnapStop: 'always',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: '#111',
               position: 'relative',
               overflow: 'hidden',
+              background: '#111',
             }}
           >
-            {/* 4:5 media frame — full device width, height from aspect ratio */}
-            <div
+            {/* Full-bleed cover image */}
+            <img
+              src={slide.src}
+              alt={slide.isAd ? 'Anzeige' : `${label} ${i + 1}`}
+              loading="lazy"
               style={{
                 width: '100%',
-                aspectRatio: '4 / 5',
-                position: 'relative',
-                overflow: 'hidden',
-                flexShrink: 0,
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                display: 'block',
               }}
-            >
-              <img
-                src={slide.src}
-                alt={slide.isAd ? 'Anzeige' : `${label} ${i + 1}`}
-                loading="lazy"
+            />
+
+            {/* Category badge — first slide only */}
+            {i === 0 && (
+              <div
                 style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                  objectPosition: 'center center',
-                  display: 'block',
+                  position: 'absolute',
+                  top: 12,
+                  left: 12,
+                  zIndex: 10,
+                  background: 'rgba(0,0,0,0.55)',
+                  backdropFilter: 'blur(6px)',
+                  WebkitBackdropFilter: 'blur(6px)',
+                  borderRadius: 99,
+                  padding: '4px 11px',
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase' as const,
+                  color: '#fff',
                 }}
-              />
+              >
+                {label}
+              </div>
+            )}
 
-              {/* Category badge — first slide only */}
-              {i === 0 && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 12,
-                    left: 12,
-                    zIndex: 10,
-                    background: 'rgba(0,0,0,0.55)',
-                    backdropFilter: 'blur(6px)',
-                    WebkitBackdropFilter: 'blur(6px)',
-                    borderRadius: 99,
-                    padding: '4px 11px',
-                    fontSize: 10,
-                    fontWeight: 700,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase' as const,
-                    color: '#fff',
-                  }}
-                >
-                  {label}
-                </div>
-              )}
-
-              {/* Ad label — ad slide only */}
-              {slide.isAd && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 12,
-                    left: 12,
-                    zIndex: 10,
-                    background: 'rgba(0,0,0,0.55)',
-                    backdropFilter: 'blur(6px)',
-                    WebkitBackdropFilter: 'blur(6px)',
-                    borderRadius: 99,
-                    padding: '4px 11px',
-                    fontSize: 10,
-                    fontWeight: 700,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase' as const,
-                    color: '#fff',
-                  }}
-                >
-                  Anzeige
-                </div>
-              )}
-            </div>
+            {/* Ad label — ad slide only */}
+            {slide.isAd && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 12,
+                  left: 12,
+                  zIndex: 10,
+                  background: 'rgba(0,0,0,0.55)',
+                  backdropFilter: 'blur(6px)',
+                  WebkitBackdropFilter: 'blur(6px)',
+                  borderRadius: 99,
+                  padding: '4px 11px',
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase' as const,
+                  color: '#fff',
+                }}
+              >
+                Anzeige
+              </div>
+            )}
           </div>
         ))}
-      </div>
 
-      {/* Pagination dots — below image, above metadata */}
-      <div
-        style={{
-          height: 28,
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 7,
-          pointerEvents: 'none',
-        }}
-      >
-        {slides.map((_, i) => (
-          <div
-            key={i}
-            style={{
-              width: i === currentSlide ? 8 : 6,
-              height: i === currentSlide ? 8 : 6,
-              borderRadius: '50%',
-              background: i === currentSlide ? '#fff' : 'rgba(255,255,255,0.35)',
-              transition: 'all 0.2s ease',
-              flexShrink: 0,
-            }}
-          />
-        ))}
       </div>
 
       {/* Bottom row — metadata + action rail */}
@@ -249,7 +224,10 @@ export default function Carousel({ category, index, isActive }: Props) {
           paddingLeft: 20,
           paddingRight: 16,
           paddingTop: 10,
-          paddingBottom: 'calc(env(safe-area-inset-bottom) + 20px)',
+          paddingBottom: 20,
+          opacity: isActive ? 1 : 0,
+          transition: 'opacity 0.25s ease',
+          pointerEvents: isActive ? 'auto' : 'none',
         }}
       >
         {/* Metadata */}
@@ -336,10 +314,12 @@ export default function Carousel({ category, index, isActive }: Props) {
       <div
         style={{
           position: 'absolute',
-          top: 'calc(env(safe-area-inset-top) + 16px)',
+          top: 16,
           right: 16,
           zIndex: 20,
           background: 'rgba(0,0,0,0.45)',
+          opacity: isActive ? 1 : 0,
+          transition: 'opacity 0.25s ease',
           backdropFilter: 'blur(4px)',
           WebkitBackdropFilter: 'blur(4px)',
           borderRadius: 99,
@@ -353,17 +333,55 @@ export default function Carousel({ category, index, isActive }: Props) {
         {currentSlide + 1} / {slides.length}
       </div>
 
-      {/* Ghost swipe hint — floats above the dots row */}
+      {/* Swipe indicator — fades in on activation, auto-dismisses after 2.5s */}
       <div
         style={{
           position: 'absolute',
-          bottom: 'calc(env(safe-area-inset-bottom) + 105px)',
+          bottom: 155,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 10,
+          pointerEvents: 'none',
+          zIndex: 10,
+          opacity: indicatorVisible ? 1 : 0,
+          transition: 'opacity 0.6s ease',
+        }}
+      >
+        <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+          {[0, 1, 2].map(i => (
+            <img
+              key={i}
+              src="/icons/ellipse.svg"
+              width={14}
+              height={14}
+              alt=""
+              style={{ opacity: i === 1 ? 1 : 0.45 }}
+            />
+          ))}
+        </div>
+        <img
+          src="/icons/swipe.svg"
+          width={34}
+          height={32}
+          alt=""
+          style={{ filter: 'drop-shadow(0 1px 8px rgba(0,0,0,0.7))' }}
+        />
+      </div>
+
+      {/* Ghost swipe hint — floats above the swipe indicator */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 195,
           left: 0,
           right: 0,
           textAlign: 'center',
           pointerEvents: 'none',
           zIndex: 5,
-          opacity: hintVisible ? 1 : 0,
+          opacity: isActive && hintVisible ? 1 : 0,
           transition: 'opacity 0.4s ease',
         }}
       >
