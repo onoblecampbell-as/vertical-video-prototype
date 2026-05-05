@@ -105,7 +105,10 @@ export function useFeedItems() {
       })
       .then(text => {
         const doc = new DOMParser().parseFromString(text, 'application/xml')
-        setItems(cycleFill(parseItems(doc)))
+        const organic = cycleFill(parseItems(doc))
+        // Tag V4 (index 3) with the graphical banner ad
+        if (organic[3]) organic[3] = { ...organic[3], hasGraphicalAd: true, graphicalAdSrc: '/images/ads/graphical-banner-ad.png' }
+        setItems(organic)
       })
       .catch(err => setError(err instanceof Error ? err : new Error(String(err))))
       .finally(() => setLoading(false))
