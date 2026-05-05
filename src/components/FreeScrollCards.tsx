@@ -190,7 +190,7 @@ function InterscrollerSlot({
 
 export default function FreeScrollCards() {
   return (
-    <div style={{ paddingBottom: 12 }}>
+    <div>
       <InterscrollerSlot
         creative={
           <img
