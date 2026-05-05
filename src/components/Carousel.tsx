@@ -116,31 +116,6 @@ export default function Carousel({ category, index, isActive }: Props) {
               }}
             />
 
-            {/* Ad label — matches counter pill style */}
-            {slide.isAd && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 12,
-                  left: 12,
-                  zIndex: 10,
-                  background: '#fff',
-                  borderRadius: 24,
-                  padding: '8px 12px',
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 900,
-                    color: '#212529',
-                    lineHeight: 1,
-                  }}
-                >
-                  Anzeige
-                </span>
-              </div>
-            )}
           </div>
         ))}
       </div>
@@ -196,18 +171,33 @@ export default function Carousel({ category, index, isActive }: Props) {
             padding: '8px 12px',
           }}
         >
-          <img src="/icons/camera.svg" width={24} height={24} alt="" style={{ filter: 'invert(1)' }} />
-          <span
-            style={{
-              fontSize: 16,
-              fontWeight: 900,
-              color: '#212529',
-              lineHeight: 1,
-              fontVariantNumeric: 'tabular-nums',
-            }}
-          >
-            {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
-          </span>
+          {slides[currentSlide]?.isAd ? (
+            <span
+              style={{
+                fontSize: 16,
+                fontWeight: 900,
+                color: '#212529',
+                lineHeight: 1,
+              }}
+            >
+              Anzeige
+            </span>
+          ) : (
+            <>
+              <img src="/icons/camera.svg" width={24} height={24} alt="" style={{ filter: 'invert(1)' }} />
+              <span
+                style={{
+                  fontSize: 16,
+                  fontWeight: 900,
+                  color: '#212529',
+                  lineHeight: 1,
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+              </span>
+            </>
+          )}
         </div>
       </div>
 
