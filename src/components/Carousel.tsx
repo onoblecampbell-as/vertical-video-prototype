@@ -116,7 +116,7 @@ export default function Carousel({ category, index, isActive }: Props) {
               }}
             />
 
-            {/* Ad label — ad slide only */}
+            {/* Ad label — matches counter pill style */}
             {slide.isAd && (
               <div
                 style={{
@@ -124,19 +124,21 @@ export default function Carousel({ category, index, isActive }: Props) {
                   top: 12,
                   left: 12,
                   zIndex: 10,
-                  background: 'rgba(0,0,0,0.55)',
-                  backdropFilter: 'blur(6px)',
-                  WebkitBackdropFilter: 'blur(6px)',
-                  borderRadius: 99,
-                  padding: '4px 11px',
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase' as const,
-                  color: '#fff',
+                  background: '#fff',
+                  borderRadius: 24,
+                  padding: '8px 12px',
                 }}
               >
-                Anzeige
+                <span
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 900,
+                    color: '#212529',
+                    lineHeight: 1,
+                  }}
+                >
+                  Anzeige
+                </span>
               </div>
             )}
           </div>
@@ -169,77 +171,77 @@ export default function Carousel({ category, index, isActive }: Props) {
         </div>
       </div>
 
-      {/* Bottom row — dots centred, camera pill pinned right */}
+      {/* Counter pill — top centre */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 12,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+          zIndex: 20,
+          opacity: isActive ? 1 : 0,
+          transition: 'opacity 0.25s ease',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            background: '#fff',
+            borderRadius: 24,
+            padding: '8px 12px',
+          }}
+        >
+          <img src="/icons/camera.svg" width={24} height={24} alt="" style={{ filter: 'invert(1)' }} />
+          <span
+            style={{
+              fontSize: 16,
+              fontWeight: 900,
+              color: '#212529',
+              lineHeight: 1,
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
+            {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+          </span>
+        </div>
+      </div>
+
+      {/* Pagination dots — bottom centre */}
       <div
         style={{
           position: 'absolute',
           bottom: 16,
-          left: 12,
-          right: 12,
+          left: 0,
+          right: 0,
           display: 'flex',
+          justifyContent: 'center',
           alignItems: 'center',
           pointerEvents: 'none',
           zIndex: 20,
+          opacity: isActive ? 1 : 0,
+          transition: 'opacity 0.25s ease',
         }}
       >
-        {/* Left spacer — mirrors pill width to keep dots truly centred */}
-        <div style={{ flex: 1 }} />
-
-        {/* Pagination dots */}
-        <div
-          style={{
-            display: 'flex',
-            gap: 5,
-            alignItems: 'center',
-            opacity: isActive ? 1 : 0,
-            transition: 'opacity 0.25s ease',
-          }}
-        >
-          {slides.map((_, i) => (
-            <img
-              key={i}
-              src="/icons/ellipse.svg"
-              width={14}
-              height={14}
-              alt=""
-              style={{
-                opacity: i === currentSlide ? 1 : 0.4,
-                filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.8))',
-                transition: 'opacity 0.2s ease',
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Right spacer + camera pill */}
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
-          <div
+        {slides.map((_, i) => (
+          <img
+            key={i}
+            src="/icons/ellipse.svg"
+            width={14}
+            height={14}
+            alt=""
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              background: '#fff',
-              borderRadius: 24,
-              padding: '8px 12px',
-              opacity: isActive ? 1 : 0,
-              transition: 'opacity 0.25s ease',
-              pointerEvents: 'auto',
+              opacity: i === currentSlide ? 1 : 0.4,
+              filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.8))',
+              transition: 'opacity 0.2s ease',
+              margin: '0 2.5px',
             }}
-          >
-            <img src="/icons/camera.svg" width={24} height={24} alt="" style={{ filter: 'invert(1)' }} />
-            <span
-              style={{
-                fontSize: 16,
-                fontWeight: 900,
-                color: '#212529',
-                lineHeight: 1,
-                fontVariantNumeric: 'tabular-nums',
-              }}
-            >
-              {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
-            </span>
-          </div>
-        </div>
+          />
+        ))}
       </div>
     </div>
   )
