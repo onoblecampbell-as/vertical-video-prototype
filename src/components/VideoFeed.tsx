@@ -24,6 +24,13 @@ export default function VideoFeed() {
 
   const handleMuteToggle = useCallback(() => setIsMuted((prev) => !prev), [])
 
+  useEffect(() => {
+    const set = () => document.documentElement.style.setProperty('--real-vh', `${window.innerHeight}px`)
+    set()
+    window.addEventListener('resize', set)
+    return () => window.removeEventListener('resize', set)
+  }, [])
+
   // Lock scroll for 3 s once a Werbepause item has fully snapped into view.
   useEffect(() => {
     const activeRender = renderItems.find((r) => r.index === activeIndex)
@@ -162,7 +169,6 @@ export default function VideoFeed() {
         inset: 0,
         overflowY: scrollLocked ? 'hidden' : 'scroll',
         scrollSnapType: inFreeScroll ? 'none' : 'y mandatory',
-        WebkitOverflowScrolling: 'touch',
         overscrollBehavior: 'contain',
         background: '#0d0d0d',
         paddingTop: 'calc(env(safe-area-inset-top) + 42px)',

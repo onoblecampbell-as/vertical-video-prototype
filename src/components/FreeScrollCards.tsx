@@ -5,7 +5,7 @@ import type { MiniArticleCardData } from './MiniArticleCard'
 import PodcastCard from './PodcastCard'
 import MiniVideoCard from './MiniVideoCard'
 
-const CARD_H = 'calc(100dvh - env(safe-area-inset-top) - 94px)'
+const CARD_H = 'calc(var(--real-vh, 100dvh) - env(safe-area-inset-top) - 94px)'
 const CARD_W = 'calc(100% - 16px)'
 const BG = '#0d0d0d'
 
@@ -126,7 +126,7 @@ function InterscrollerSlot({
         style={{
           position: 'sticky',
           top: 0,
-          height: '100dvh',
+          height: 'var(--real-vh, 100dvh)',
           width: 'calc(100% - 16px)',
           marginLeft: 8,
           marginRight: 8,
@@ -139,7 +139,7 @@ function InterscrollerSlot({
       </div>
 
       {/* [B-top] Opaque cards above window — dark bg fills card corner gaps, z: 2 */}
-      <div style={{ position: 'relative', zIndex: 2, background: BG, marginTop: '-100dvh' }}>
+      <div style={{ position: 'relative', zIndex: 2, background: BG, marginTop: 'calc(-1 * var(--real-vh, 100dvh))' }}>
         {topCards}
         <AnzeigeBar />
       </div>
