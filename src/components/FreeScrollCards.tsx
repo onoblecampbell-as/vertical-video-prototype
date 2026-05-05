@@ -20,18 +20,32 @@ function Card({ marginBottom = 0, marginTop = 0 }: { marginBottom?: number; marg
   )
 }
 
-function LabelBar({ children }: { children: string }) {
+function AnzeigeBar() {
   return (
     <div
       style={{
-        height: 24,
-        background: '#e9ecef',
+        height: 28,
+        background: 'rgba(0,0,0,0.65)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
+        borderTop: '1px solid #FFBE00',
+        borderBottom: '1px solid #FFBE00',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
       }}
     >
-      <span style={{ fontSize: 12, color: '#495057', letterSpacing: '0.04em' }}>{children}</span>
+      <span
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase' as const,
+          color: '#fff',
+        }}
+      >
+        Anzeige
+      </span>
     </div>
   )
 }
@@ -58,20 +72,18 @@ export default function FreeScrollCards() {
       </div>
 
       {/* [B-top] Cards 1+2 + Anzeige bar — dark bg fills rounded card corners, z: 2 */}
-      {/* margin-top: -250 pulls this up to align with the top of the wrapper */}
       <div style={{ position: 'relative', zIndex: 2, background: BG, marginTop: -250 }}>
         <Card marginBottom={16} />
         <Card marginBottom={8} />
-        <LabelBar>Anzeige</LabelBar>
+        <AnzeigeBar />
       </div>
 
-      {/* Window — bare transparent gap; sticky ad (z: 1) paints through here */}
+      {/* Window — transparent gap; sticky ad (z: 1) paints through here */}
       <div style={{ height: 274 }} />
 
-      {/* [B-bottom] Weiter label + Cards 3+4 — dark bg fills card corners, z: 2 */}
+      {/* [B-bottom] Cards 3+4 — dark bg fills card corners, z: 2 */}
       <div style={{ position: 'relative', zIndex: 2, background: BG }}>
-        <LabelBar>Weiter mit BILD</LabelBar>
-        <Card marginTop={8} marginBottom={16} />
+        <Card marginTop={16} marginBottom={16} />
         <Card />
       </div>
 
