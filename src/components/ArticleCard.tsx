@@ -81,7 +81,7 @@ export default function ArticleCard({ data, marginTop = 0, marginBottom = 0 }: P
               fontWeight: 700,
               color: '#fff',
               lineHeight: 1.1,
-              fontFamily: 'Inter, sans-serif',
+              fontFamily: '"Gotham XNarrow", sans-serif',
               textShadow: '0px 2px 3px rgba(0,0,0,0.35)',
             }}
           >
@@ -94,7 +94,7 @@ export default function ArticleCard({ data, marginTop = 0, marginBottom = 0 }: P
               fontWeight: 900,
               color: '#fff',
               lineHeight: 1,
-              fontFamily: '"Barlow Condensed", "Inter", sans-serif',
+              fontFamily: '"Gotham Condensed", sans-serif',
               textShadow: '0px 2px 3px rgba(0,0,0,0.25)',
             }}
           >
@@ -110,7 +110,7 @@ export default function ArticleCard({ data, marginTop = 0, marginBottom = 0 }: P
             fontWeight: 400,
             color: 'rgba(255,255,255,0.9)',
             lineHeight: 1.35,
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: '"Gotham XNarrow", sans-serif',
           }}
         >
           {data.description}
@@ -128,7 +128,7 @@ export default function ArticleCard({ data, marginTop = 0, marginBottom = 0 }: P
                   fontWeight: 700,
                   color: '#fff',
                   letterSpacing: '0.4px',
-                  fontFamily: 'Inter, sans-serif',
+                  fontFamily: '"Gotham XNarrow", sans-serif',
                 }}
               >
                 {data.likeCount}
@@ -156,7 +156,7 @@ export default function ArticleCard({ data, marginTop = 0, marginBottom = 0 }: P
                 color: '#fff',
                 letterSpacing: '0.6px',
                 textTransform: 'uppercase',
-                fontFamily: 'Inter, sans-serif',
+                fontFamily: '"Gotham XNarrow", sans-serif',
               }}
             >
               Mehr lesen

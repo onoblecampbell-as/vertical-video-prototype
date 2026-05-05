@@ -1,3 +1,29 @@
+/* Gotham Condensed — headline weight */
+@font-face {
+  font-family: 'Gotham Condensed';
+  src: url('/fonts/HCo_Gotham_C_Bundle/OpenType/GothamCond-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Gotham XNarrow — kicker (bold) and body (book) */
+@font-face {
+  font-family: 'Gotham XNarrow';
+  src: url('/fonts/HCo_Gotham_XN_Bundle/OpenType/GothamXNarrow-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gotham XNarrow';
+  src: url('/fonts/HCo_Gotham_XN_Bundle/OpenType/GothamXNarrow-Book.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {
