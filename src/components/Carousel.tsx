@@ -141,7 +141,7 @@ export default function Carousel({ category, index, isActive }: Props) {
             width={68}
             height={64}
             alt=""
-            style={{ filter: 'drop-shadow(0 1px 8px rgba(0,0,0,0.7))', display: 'block' }}
+            style={{ display: 'block' }}
           />
         </div>
       </div>
