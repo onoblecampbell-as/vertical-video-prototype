@@ -2,6 +2,7 @@ import ArticleCard from './ArticleCard'
 import type { ArticleCardData } from './ArticleCard'
 import MiniArticleCard from './MiniArticleCard'
 import type { MiniArticleCardData } from './MiniArticleCard'
+import PodcastCard from './PodcastCard'
 
 const CARD_H = 'calc(100dvh - env(safe-area-inset-top) - 94px)'
 const CARD_W = 'calc(100% - 16px)'
@@ -164,6 +165,7 @@ export default function FreeScrollCards() {
             <DoubleCard
               marginBottom={8}
               top={<MiniArticleCard data={DAX_ARTICLE} />}
+              bottom={<PodcastCard />}
             />
           </>
         }
