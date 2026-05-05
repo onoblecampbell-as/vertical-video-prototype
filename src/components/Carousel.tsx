@@ -147,7 +147,7 @@ export default function Carousel({ category, index, isActive }: Props) {
       <div
         style={{
           position: 'absolute',
-          bottom: '33%',
+          bottom: '20%',
           left: 0,
           right: 0,
           display: 'flex',
