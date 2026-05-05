@@ -166,34 +166,38 @@ export default function Carousel({ category, index, isActive }: Props) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 8,
-            background: '#fff',
-            borderRadius: 24,
-            padding: '0 12px',
-            height: 40,
-            minWidth: 120,
+            gap: 6,
+            background: 'rgba(255,255,255,0.14)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            border: '1px solid rgba(255,255,255,0.25)',
+            borderRadius: 99,
+            padding: '0 11px',
+            height: 28,
+            minWidth: 90,
           }}
         >
           {slides[currentSlide]?.isAd ? (
             <span
               style={{
-                fontSize: 16,
-                fontWeight: 900,
-                color: '#212529',
-                lineHeight: 1,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase' as const,
+                color: '#fff',
               }}
             >
               Anzeige
             </span>
           ) : (
             <>
-              <img src="/icons/camera.svg" width={24} height={24} alt="" style={{ filter: 'invert(1)' }} />
+              <img src="/icons/camera.svg" width={16} height={16} alt="" />
               <span
                 style={{
-                  fontSize: 16,
-                  fontWeight: 900,
-                  color: '#212529',
-                  lineHeight: 1,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  color: '#fff',
                   fontVariantNumeric: 'tabular-nums',
                 }}
               >
