@@ -1,9 +1,17 @@
 import ArticleCard from './ArticleCard'
 import type { ArticleCardData } from './ArticleCard'
+import MiniArticleCard from './MiniArticleCard'
+import type { MiniArticleCardData } from './MiniArticleCard'
 
 const CARD_H = 'calc(100dvh - env(safe-area-inset-top) - 94px)'
 const CARD_W = 'calc(100% - 16px)'
 const BG = '#0d0d0d'
+
+const DAX_ARTICLE: MiniArticleCardData = {
+  heroSrc: '/images/articles/dax-hero.png',
+  kicker: '„Größte Ölkrise der Geschichte"',
+  title: 'Rund 150 Milliarden Euro weg - Krieg drückt den Dax',
+}
 
 const BAHN_ARTICLE: ArticleCardData = {
   heroSrc: '/images/articles/bahn-hero.png',
@@ -31,7 +39,17 @@ function Card({ marginBottom = 0, marginTop = 0 }: { marginBottom?: number; marg
   )
 }
 
-function DoubleCard({ marginBottom = 0, marginTop = 0 }: { marginBottom?: number; marginTop?: number }) {
+function DoubleCard({
+  marginBottom = 0,
+  marginTop = 0,
+  top,
+  bottom,
+}: {
+  marginBottom?: number
+  marginTop?: number
+  top?: React.ReactNode
+  bottom?: React.ReactNode
+}) {
   return (
     <div
       style={{
@@ -47,8 +65,8 @@ function DoubleCard({ marginBottom = 0, marginTop = 0 }: { marginBottom?: number
         gap: 16,
       }}
     >
-      <div style={{ flex: 1, borderRadius: 24, background: '#fff' }} />
-      <div style={{ flex: 1, borderRadius: 24, background: '#fff' }} />
+      {top ?? <div style={{ flex: 1, borderRadius: 24, background: '#fff' }} />}
+      {bottom ?? <div style={{ flex: 1, borderRadius: 24, background: '#fff' }} />}
     </div>
   )
 }
@@ -143,7 +161,10 @@ export default function FreeScrollCards() {
         topCards={
           <>
             <ArticleCard data={BAHN_ARTICLE} marginBottom={16} />
-            <DoubleCard marginBottom={8} />
+            <DoubleCard
+              marginBottom={8}
+              top={<MiniArticleCard data={DAX_ARTICLE} />}
+            />
           </>
         }
         bottomCards={
