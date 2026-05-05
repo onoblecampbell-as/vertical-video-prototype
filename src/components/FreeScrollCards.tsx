@@ -60,7 +60,9 @@ export default function FreeScrollCards() {
           position: 'sticky',
           top: 0,
           height: '100dvh',
-          width: '100%',
+          width: 'calc(100% - 16px)',
+          marginLeft: 8,
+          marginRight: 8,
           zIndex: 1,
         }}
       >
