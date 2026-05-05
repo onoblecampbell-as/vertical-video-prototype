@@ -78,7 +78,7 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
             background: 'rgba(255,255,255,0.14)',
             backdropFilter: 'blur(6px)',
             WebkitBackdropFilter: 'blur(6px)',
-            border: '1px solid rgba(255,255,255,0.25)',
+            border: '1px solid #FFBE00',
             borderRadius: 99,
             padding: '4px 11px',
             fontSize: 10,
@@ -190,7 +190,7 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
             background: 'rgba(255,255,255,0.14)',
             backdropFilter: 'blur(6px)',
             WebkitBackdropFilter: 'blur(6px)',
-            border: '1px solid rgba(255,255,255,0.25)',
+            border: '1px solid #FFBE00',
             borderRadius: 99,
             padding: '6px 12px 6px 8px',
           }}

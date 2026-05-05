@@ -103,6 +103,7 @@ export default function CarouselFeedItem({ item, index }: Props) {
                   background: 'rgba(0,0,0,0.55)',
                   backdropFilter: 'blur(6px)',
                   WebkitBackdropFilter: 'blur(6px)',
+                  border: '1px solid #FFBE00',
                   borderRadius: 99,
                   padding: '4px 11px',
                   fontSize: 10,
