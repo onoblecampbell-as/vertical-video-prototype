@@ -104,6 +104,10 @@ export default function VideoFeed() {
         scrollSnapType: 'y mandatory',
         WebkitOverflowScrolling: 'touch',
         overscrollBehavior: 'contain',
+        background: '#0d0d0d',
+        paddingTop: 'calc(env(safe-area-inset-top) + 42px)',
+        paddingBottom: '80px',
+        scrollPaddingTop: 'calc(env(safe-area-inset-top) + 42px)',
       }}
     >
       {renderItems.map((r) => {

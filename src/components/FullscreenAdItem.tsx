@@ -37,13 +37,16 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
       data-index={index}
       style={{
         position: 'relative',
-        height: '100dvh',
-        width: '100%',
+        height: 'calc(100dvh - env(safe-area-inset-top) - 94px)',
+        width: 'calc(100% - 16px)',
+        margin: '0 auto',
         scrollSnapAlign: 'start',
         scrollSnapStop: 'always',
         overflow: 'hidden',
         background: '#000',
         flexShrink: 0,
+        borderRadius: 24,
+        marginBottom: 12,
       }}
     >
       {/* Video layer */}
@@ -61,12 +64,15 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
         }}
       />
 
+      {/* UI overlay — hidden until card is active */}
+      <div style={{ opacity: isActive ? 1 : 0, transition: 'opacity 0.25s ease', pointerEvents: isActive ? 'auto' : 'none' }}>
+
       {/* Top-right: ad label — skippable ads only */}
       {!item.isWerbepause && (
         <div
           style={{
             position: 'absolute',
-            top: 'calc(env(safe-area-inset-top) + 16px)',
+            top: 16,
             right: 16,
             zIndex: 10,
             background: 'rgba(255,255,255,0.14)',
@@ -95,7 +101,7 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
           bottom: 0,
           paddingLeft: 20,
           paddingRight: 20,
-          paddingBottom: 'calc(env(safe-area-inset-bottom) + 28px)',
+          paddingBottom: 28,
           zIndex: 5,
           display: 'flex',
           flexDirection: 'column',
@@ -175,7 +181,7 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
         <div
           style={{
             position: 'absolute',
-            bottom: 'calc(env(safe-area-inset-bottom) + 28px)',
+            bottom: 28,
             right: 20,
             zIndex: 10,
             display: 'flex',
@@ -230,6 +236,8 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
           </span>
         </div>
       )}
+
+      </div>{/* end UI overlay */}
     </div>
   )
 }

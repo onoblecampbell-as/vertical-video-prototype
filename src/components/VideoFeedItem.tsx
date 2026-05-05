@@ -50,13 +50,16 @@ export default function VideoFeedItem({
       data-index={index}
       style={{
         position: 'relative',
-        height: '100dvh',
-        width: '100%',
+        height: 'calc(100dvh - env(safe-area-inset-top) - 94px)',
+        width: 'calc(100% - 16px)',
+        margin: '0 auto',
         scrollSnapAlign: 'start',
         scrollSnapStop: 'always',
         overflow: 'hidden',
         background: '#000',
         flexShrink: 0,
+        borderRadius: 24,
+        marginBottom: 12,
       }}
     >
       {/* Video layer */}
@@ -87,15 +90,17 @@ export default function VideoFeedItem({
         </span>
       )}
 
-      {/* All overlay UI */}
-      <VideoOverlay
-        item={item}
-        isActive={isActive}
-        isMuted={isMuted}
-        onMuteToggle={onMuteToggle}
-        onLike={handleLike}
-        liked={liked}
-      />
+      {/* All overlay UI — hidden until this card is active */}
+      <div style={{ opacity: isActive ? 1 : 0, transition: 'opacity 0.25s ease', pointerEvents: isActive ? 'auto' : 'none' }}>
+        <VideoOverlay
+          item={item}
+          isActive={isActive}
+          isMuted={isMuted}
+          onMuteToggle={onMuteToggle}
+          onLike={handleLike}
+          liked={liked}
+        />
+      </div>
     </div>
   )
 }

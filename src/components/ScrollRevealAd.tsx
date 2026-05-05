@@ -17,7 +17,7 @@ const WINDOW_HEIGHT: Record<string, string> = {
 // never reveals empty space at the edges of the window.
 const PARALLAX = 32
 
-export default function ScrollRevealAd({ item, index, isActive: _isActive }: Props) {
+export default function ScrollRevealAd({ item, index, isActive }: Props) {
   const outerRef    = useRef<HTMLDivElement>(null)
   const videoRef    = useRef<HTMLVideoElement>(null)
   const creativeRef = useRef<HTMLDivElement>(null)
@@ -80,22 +80,25 @@ export default function ScrollRevealAd({ item, index, isActive: _isActive }: Pro
         scrollSnapAlign: 'start',
         scrollSnapStop: 'always',
         flexShrink: 0,
+        marginBottom: 12,
       }}
     >
-      {/* Sticky frame — stays fixed at top:0 while the 200dvh outer scrolls */}
+      {/* Sticky frame — aligns with card grid while the 200dvh outer scrolls */}
       <div
         style={{
           position: 'sticky',
-          top: 0,
-          height: '100dvh',
-          width: '100%',
+          top: 'calc(env(safe-area-inset-top) + 42px)',
+          height: 'calc(100dvh - env(safe-area-inset-top) - 94px)',
+          width: 'calc(100% - 16px)',
+          margin: '0 auto',
           overflow: 'hidden',
           background: '#0d0d0d',
+          borderRadius: 24,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          paddingTop: 'calc(env(safe-area-inset-top) + 16px)',
-          paddingBottom: 'calc(env(safe-area-inset-bottom) + 20px)',
+          paddingTop: 16,
+          paddingBottom: 20,
         }}
       >
         {/* Label row */}
@@ -107,6 +110,8 @@ export default function ScrollRevealAd({ item, index, isActive: _isActive }: Pro
             display: 'flex',
             alignItems: 'center',
             gap: 8,
+            opacity: isActive ? 1 : 0,
+            transition: 'opacity 0.25s ease',
           }}
         >
           <span
@@ -186,6 +191,9 @@ export default function ScrollRevealAd({ item, index, isActive: _isActive }: Pro
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: 12,
+            opacity: isActive ? 1 : 0,
+            transition: 'opacity 0.25s ease',
+            pointerEvents: isActive ? 'auto' : 'none',
           }}
         >
           <div style={{ flex: 1, minWidth: 0 }}>
