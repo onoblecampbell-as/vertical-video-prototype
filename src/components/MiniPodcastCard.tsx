@@ -88,7 +88,9 @@ export default function MiniPodcastCard() {
             justifyContent: 'center',
           }}
         >
-          <img src="/icons/play.svg" width={20} height={20} alt="Play" style={{ marginLeft: 3 }} />
+          <svg width="18" height="22" viewBox="0 0 18 22" fill="none" style={{ marginLeft: 3 }}>
+            <path d="M1 1L17 11L1 21V1Z" fill="#DD0000" />
+          </svg>
         </button>
       </div>
 
@@ -152,7 +154,7 @@ export default function MiniPodcastCard() {
         style={{
           position: 'absolute',
           bottom: 16,
-          left: 42,
+          left: 16,
           right: 16,
           display: 'flex',
           alignItems: 'flex-start',
