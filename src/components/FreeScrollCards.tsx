@@ -54,12 +54,12 @@ export default function FreeScrollCards() {
   return (
     <div style={{ position: 'relative', paddingBottom: 12 }}>
 
-      {/* [A] Sticky ad — sits at vertical centre of viewport, z: 1, behind cards */}
+      {/* [A] Sticky ad — full viewport height, sticks at top, visible through window, z: 1 */}
       <div
         style={{
           position: 'sticky',
-          top: 'calc(50dvh - 125px)',
-          height: 250,
+          top: 0,
+          height: '100dvh',
           width: '100%',
           zIndex: 1,
         }}
@@ -67,12 +67,13 @@ export default function FreeScrollCards() {
         <img
           src="/images/ads/interscroller-static.png"
           alt=""
-          style={{ width: '100%', height: 250, objectFit: 'cover', display: 'block' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
         />
       </div>
 
       {/* [B-top] Cards 1+2 + Anzeige bar — dark bg fills rounded card corners, z: 2 */}
-      <div style={{ position: 'relative', zIndex: 2, background: BG, marginTop: -250 }}>
+      {/* margin-top: -100dvh pulls content back up to the start of the wrapper */}
+      <div style={{ position: 'relative', zIndex: 2, background: BG, marginTop: '-100dvh' }}>
         <Card marginBottom={16} />
         <Card marginBottom={8} />
         <AnzeigeBar />
