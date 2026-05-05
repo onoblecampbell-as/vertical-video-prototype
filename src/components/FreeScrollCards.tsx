@@ -9,6 +9,12 @@ const CARD_H = 'calc(100dvh - env(safe-area-inset-top) - 94px)'
 const CARD_W = 'calc(100% - 16px)'
 const BG = '#0d0d0d'
 
+const BAHN2_ARTICLE: MiniArticleCardData = {
+  heroSrc: '/images/articles/bahn2-hero.jpg',
+  kicker: 'Minus 760 Millionen Euro',
+  title: 'Mega-Verlust bei der Deutschen Bahn',
+}
+
 const DAX_ARTICLE: MiniArticleCardData = {
   heroSrc: '/images/articles/dax-hero.png',
   kicker: '„Größte Ölkrise der Geschichte"',
@@ -176,6 +182,7 @@ export default function FreeScrollCards() {
               marginTop={16}
               marginBottom={16}
               top={<MiniVideoCard />}
+              bottom={<MiniArticleCard data={BAHN2_ARTICLE} />}
             />
             <Card />
           </>
