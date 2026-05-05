@@ -87,7 +87,7 @@ export default function Carousel({ category, index, isActive }: Props) {
           overflowX: 'scroll',
           scrollSnapType: 'x mandatory',
           scrollbarWidth: 'none',
-          touchAction: 'pan-x',
+          touchAction: 'pan-x pan-y',
         }}
       >
         {slides.map((slide, i) => (
