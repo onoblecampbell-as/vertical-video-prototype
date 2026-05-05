@@ -31,6 +31,28 @@ function Card({ marginBottom = 0, marginTop = 0 }: { marginBottom?: number; marg
   )
 }
 
+function DoubleCard({ marginBottom = 0, marginTop = 0 }: { marginBottom?: number; marginTop?: number }) {
+  return (
+    <div
+      style={{
+        height: CARD_H,
+        width: CARD_W,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop,
+        marginBottom,
+        flexShrink: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+      }}
+    >
+      <div style={{ flex: 1, borderRadius: 24, background: '#fff' }} />
+      <div style={{ flex: 1, borderRadius: 24, background: '#fff' }} />
+    </div>
+  )
+}
+
 function AnzeigeBar() {
   return (
     <div
@@ -121,7 +143,7 @@ export default function FreeScrollCards() {
         topCards={
           <>
             <ArticleCard data={BAHN_ARTICLE} marginBottom={16} />
-            <Card marginBottom={8} />
+            <DoubleCard marginBottom={8} />
           </>
         }
         bottomCards={
