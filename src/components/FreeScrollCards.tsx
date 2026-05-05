@@ -162,11 +162,12 @@ function InterscrollerSlot({
           marginLeft: 8,
           marginRight: 8,
           zIndex: 1,
-          borderRadius: 24,
-          overflow: 'hidden',
         }}
       >
-        {creative}
+        {/* overflow:hidden lives on inner wrapper — putting it on the sticky element itself breaks iOS Safari */}
+        <div style={{ width: '100%', height: '100%', borderRadius: 24, overflow: 'hidden' }}>
+          {creative}
+        </div>
       </div>
 
       {/* [B-top] Opaque cards above window — dark bg fills card corner gaps, z: 2 */}
