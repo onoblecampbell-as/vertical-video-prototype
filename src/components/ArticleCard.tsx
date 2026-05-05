@@ -29,7 +29,6 @@ export default function ArticleCard({ data, marginTop = 0, marginBottom = 0 }: P
         borderRadius: 24,
         overflow: 'hidden',
         flexShrink: 0,
-        border: '0.5px solid rgba(248,249,250,0.8)',
         boxShadow: '0px 1px 5px 1px rgba(0,0,0,0.1), 0px 1px 5px 0px rgba(0,0,0,0.2)',
         background: '#111',
       }}
@@ -54,7 +53,7 @@ export default function ArticleCard({ data, marginTop = 0, marginBottom = 0 }: P
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0) 25%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.92) 85%, rgba(0,0,0,0.97) 100%)',
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0) 45%, rgba(0,0,0,0.35) 65%, rgba(0,0,0,0.7) 82%, rgba(0,0,0,0.85) 100%)',
           pointerEvents: 'none',
         }}
       />
