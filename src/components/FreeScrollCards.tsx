@@ -54,9 +54,11 @@ function AnzeigeBar() {
 function InterscrollerSlot({
   cards,
   creative,
+  windowHeight = 274,
 }: {
   cards: React.ReactNode
   creative: React.ReactNode
+  windowHeight?: number | string
 }) {
   return (
     <div style={{ position: 'relative' }}>
@@ -84,7 +86,7 @@ function InterscrollerSlot({
       </div>
 
       {/* Transparent window — sticky ad shows through here */}
-      <div style={{ height: 274 }} />
+      <div style={{ height: windowHeight }} />
     </div>
   )
 }
@@ -110,8 +112,9 @@ export default function FreeScrollCards() {
         }
       />
 
-      {/* Interscroller 2 — video ad */}
+      {/* Interscroller 2 — video ad, full-height window */}
       <InterscrollerSlot
+        windowHeight="100dvh"
         creative={
           <video
             src="/images/ads/interscroller-video-golf.mp4"
