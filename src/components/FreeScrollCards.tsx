@@ -80,6 +80,36 @@ function DoubleCard({
   )
 }
 
+function WeiterBar() {
+  return (
+    <div
+      style={{
+        height: 28,
+        background: 'rgba(0,0,0,0.65)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
+        borderTop: '1px solid #FFBE00',
+        borderBottom: '1px solid #FFBE00',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <span
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase' as const,
+          color: '#fff',
+        }}
+      >
+        Weiter mit BILD
+      </span>
+    </div>
+  )
+}
+
 function AnzeigeBar() {
   return (
     <div
@@ -150,6 +180,7 @@ function InterscrollerSlot({
 
       {/* [B-bottom] Opaque cards below window — covers ad after reveal, z: 2 */}
       <div style={{ position: 'relative', zIndex: 2, background: BG }}>
+        <WeiterBar />
         {bottomCards}
       </div>
     </div>
