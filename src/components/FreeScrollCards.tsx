@@ -3,6 +3,7 @@ import type { ArticleCardData } from './ArticleCard'
 import MiniArticleCard from './MiniArticleCard'
 import type { MiniArticleCardData } from './MiniArticleCard'
 import PodcastCard from './PodcastCard'
+import MiniVideoCard from './MiniVideoCard'
 
 const CARD_H = 'calc(100dvh - env(safe-area-inset-top) - 94px)'
 const CARD_W = 'calc(100% - 16px)'
@@ -171,7 +172,11 @@ export default function FreeScrollCards() {
         }
         bottomCards={
           <>
-            <Card marginTop={16} marginBottom={16} />
+            <DoubleCard
+              marginTop={16}
+              marginBottom={16}
+              top={<MiniVideoCard />}
+            />
             <Card />
           </>
         }
