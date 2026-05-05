@@ -50,11 +50,17 @@ function AnzeigeBar() {
   )
 }
 
-export default function FreeScrollCards() {
+// Self-contained interscroller slot — sticky ad background + opaque cards above + transparent window
+function InterscrollerSlot({
+  cards,
+  creative,
+}: {
+  cards: React.ReactNode
+  creative: React.ReactNode
+}) {
   return (
-    <div style={{ position: 'relative', paddingBottom: 12 }}>
-
-      {/* [A] Sticky ad — full viewport height, sticks at top, visible through window, z: 1 */}
+    <div style={{ position: 'relative' }}>
+      {/* Sticky ad — full viewport height, z: 1, visible through window below */}
       <div
         style={{
           position: 'sticky',
@@ -68,28 +74,62 @@ export default function FreeScrollCards() {
           overflow: 'hidden',
         }}
       >
-        <img
-          src="/images/ads/interscroller-static.png"
-          alt=""
-          style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center top', display: 'block' }}
-        />
+        {creative}
       </div>
 
-      {/* [B-top] Cards 1+2 + Anzeige bar — dark bg fills rounded card corners, z: 2 */}
-      {/* margin-top: -100dvh pulls content back up to the start of the wrapper */}
+      {/* Opaque content above window — dark bg fills card corner gaps, z: 2 */}
       <div style={{ position: 'relative', zIndex: 2, background: BG, marginTop: '-100dvh' }}>
-        <Card marginBottom={16} />
-        <Card marginBottom={8} />
+        {cards}
         <AnzeigeBar />
       </div>
 
-      {/* Window — transparent gap; sticky ad (z: 1) paints through here */}
+      {/* Transparent window — sticky ad shows through here */}
       <div style={{ height: 274 }} />
+    </div>
+  )
+}
 
-      {/* [B-bottom] Cards 3+4 — dark bg fills card corners, z: 2 */}
+export default function FreeScrollCards() {
+  return (
+    <div style={{ paddingBottom: 12 }}>
+
+      {/* Interscroller 1 — static image ad */}
+      <InterscrollerSlot
+        creative={
+          <img
+            src="/images/ads/interscroller-static.png"
+            alt=""
+            style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center top', display: 'block' }}
+          />
+        }
+        cards={
+          <>
+            <Card marginBottom={16} />
+            <Card marginBottom={8} />
+          </>
+        }
+      />
+
+      {/* Interscroller 2 — video ad */}
+      <InterscrollerSlot
+        creative={
+          <video
+            src="/images/ads/interscroller-video-golf.mp4"
+            style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        }
+        cards={
+          <Card marginBottom={8} />
+        }
+      />
+
+      {/* Final card — dark bg keeps corner gaps consistent */}
       <div style={{ position: 'relative', zIndex: 2, background: BG }}>
-        <Card marginTop={16} marginBottom={16} />
-        <Card />
+        <Card marginTop={16} />
       </div>
 
     </div>
