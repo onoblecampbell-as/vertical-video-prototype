@@ -54,11 +54,9 @@ function AnzeigeBar() {
 function InterscrollerSlot({
   cards,
   creative,
-  windowHeight = 274,
 }: {
   cards: React.ReactNode
   creative: React.ReactNode
-  windowHeight?: number | string
 }) {
   return (
     <div style={{ position: 'relative' }}>
@@ -86,7 +84,7 @@ function InterscrollerSlot({
       </div>
 
       {/* Transparent window — sticky ad shows through here */}
-      <div style={{ height: windowHeight }} />
+      <div style={{ height: 274 }} />
     </div>
   )
 }
@@ -95,7 +93,6 @@ export default function FreeScrollCards() {
   return (
     <div style={{ paddingBottom: 12 }}>
 
-      {/* Interscroller 1 — static image ad */}
       <InterscrollerSlot
         creative={
           <img
@@ -112,27 +109,10 @@ export default function FreeScrollCards() {
         }
       />
 
-      {/* Interscroller 2 — video ad, full-height window */}
-      <InterscrollerSlot
-        windowHeight="100dvh"
-        creative={
-          <video
-            src="/images/ads/interscroller-video-golf.mp4"
-            style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
-        }
-        cards={
-          <Card marginBottom={8} />
-        }
-      />
-
-      {/* Final card — dark bg keeps corner gaps consistent */}
+      {/* Cards 3+4 — dark bg keeps corner gaps consistent */}
       <div style={{ position: 'relative', zIndex: 2, background: BG }}>
-        <Card marginTop={16} />
+        <Card marginTop={16} marginBottom={16} />
+        <Card />
       </div>
 
     </div>
