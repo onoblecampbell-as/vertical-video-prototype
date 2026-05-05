@@ -181,10 +181,8 @@ export default function FreeScrollCards() {
             <DoubleCard
               marginTop={16}
               marginBottom={16}
-              top={<MiniVideoCard />}
               bottom={<MiniArticleCard data={BAHN2_ARTICLE} />}
             />
-            <Card />
           </>
         }
       />
