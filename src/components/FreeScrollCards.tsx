@@ -64,6 +64,8 @@ export default function FreeScrollCards() {
           marginLeft: 8,
           marginRight: 8,
           zIndex: 1,
+          borderRadius: 24,
+          overflow: 'hidden',
         }}
       >
         <img
