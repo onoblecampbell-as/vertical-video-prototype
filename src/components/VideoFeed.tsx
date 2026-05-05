@@ -1,5 +1,6 @@
-import { useRef, useState, useEffect, useCallback } from 'react'
-import { useCarouselFeed } from '../hooks/useCarouselFeed'
+import { Fragment, useRef, useState, useEffect, useCallback, useMemo } from 'react'
+import { useAreaFeed } from '../hooks/useFeedLayout'
+import type { RenderItem } from '../hooks/useCarouselFeed'
 import { useFeedItems } from '../hooks/useFeedItems'
 import VideoFeedItem from './VideoFeedItem'
 import FullscreenAdItem from './FullscreenAdItem'
@@ -7,20 +8,22 @@ import ScrollRevealAd from './ScrollRevealAd'
 import Carousel from './Carousel'
 import FreeScrollCards from './FreeScrollCards'
 
-// Free-scroll section injected after this many render items (~halfway)
-const FREE_SCROLL_AFTER = 8
-
 export default function VideoFeed() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const startSentinelRef = useRef<HTMLDivElement>(null)
-  const endSentinelRef = useRef<HTMLDivElement>(null)
+  const zoneState = useRef<Map<string, { started: boolean; ended: boolean }>>(new Map())
   const [activeIndex, setActiveIndex] = useState(0)
   const [isMuted, setIsMuted] = useState(true)
   const [scrollLocked, setScrollLocked] = useState(false)
   const [inFreeScroll, setInFreeScroll] = useState(false)
 
   const { items, loading, error } = useFeedItems()
-  const renderItems = useCarouselFeed(items)
+  const areaGroups = useAreaFeed(items)
+
+  // Flat list of all snap render items — used for werbepause detection
+  const allRenderItems = useMemo(
+    () => areaGroups.flatMap(({ area1, area3, area5 }) => [...area1, ...area3, ...area5]),
+    [areaGroups]
+  )
 
   const handleMuteToggle = useCallback(() => setIsMuted((prev) => !prev), [])
 
@@ -33,7 +36,7 @@ export default function VideoFeed() {
 
   // Lock scroll for 3 s once a Werbepause item has fully snapped into view.
   useEffect(() => {
-    const activeRender = renderItems.find((r) => r.index === activeIndex)
+    const activeRender = allRenderItems.find((r) => r.index === activeIndex)
     const isWerbepause =
       activeRender?.kind === 'feed' && activeRender.item.isWerbepause === true
 
@@ -63,7 +66,7 @@ export default function VideoFeed() {
       clearTimeout(fallback)
       clearTimeout(unlockTimer)
     }
-  }, [activeIndex, renderItems])
+  }, [activeIndex, allRenderItems])
 
   const handleSkip = useCallback(() => {
     const c = containerRef.current
@@ -71,6 +74,7 @@ export default function VideoFeed() {
     c.scrollBy({ top: c.clientHeight, behavior: 'smooth' })
   }, [])
 
+  // Active item observer — DOM-based, re-arms when area layout changes
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -87,52 +91,57 @@ export default function VideoFeed() {
           }
         })
       },
-      {
-        root: container,
-        threshold: 0.6,
-      }
+      { root: container, threshold: 0.6 }
     )
 
-    const items = container.querySelectorAll('[data-feed-item]')
-    items.forEach((el) => observer.observe(el))
-
+    container.querySelectorAll('[data-feed-item]').forEach((el) => observer.observe(el))
     return () => observer.disconnect()
-  }, [renderItems])
+  }, [areaGroups])
 
-  // Sentinel observer — switches scroll-snap off while user is inside the free-scroll zone
+  // Multi-zone sentinel observer — disables scroll-snap while inside any smooth zone
   useEffect(() => {
-    const start = startSentinelRef.current
-    const end = endSentinelRef.current
     const container = containerRef.current
-    if (!start || !end || !container) return
+    if (!container) return
 
-    // Track whether each sentinel has scrolled above the container's top edge
-    const state = { startPassedOrAt: false, endPassedAbove: false }
+    zoneState.current.clear()
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          const el = entry.target as HTMLElement
+          const zoneId = el.dataset.zoneId!
+          const zoneType = el.dataset.zoneType! // 'start' | 'end'
+
           const isAbove =
             !entry.isIntersecting &&
             entry.boundingClientRect.top < (entry.rootBounds?.top ?? 0)
+          const isPassed = entry.isIntersecting || isAbove
 
-          if (entry.target === start) {
-            state.startPassedOrAt = entry.isIntersecting || isAbove
+          if (!zoneState.current.has(zoneId)) {
+            zoneState.current.set(zoneId, { started: false, ended: false })
+          }
+          const state = zoneState.current.get(zoneId)!
+
+          if (zoneType === 'start') {
+            state.started = isPassed
           } else {
-            state.endPassedAbove = isAbove
+            state.ended = isPassed
           }
         })
-        setInFreeScroll(state.startPassedOrAt && !state.endPassedAbove)
+
+        const inAnyZone = Array.from(zoneState.current.values()).some(
+          (s) => s.started && !s.ended
+        )
+        setInFreeScroll(inAnyZone)
       },
       { root: container, threshold: 0 }
     )
 
-    observer.observe(start)
-    observer.observe(end)
+    container.querySelectorAll('[data-zone-id]').forEach((el) => observer.observe(el))
     return () => observer.disconnect()
-  }, [renderItems])
+  }, [areaGroups])
 
-  const renderFeedItem = (r: (typeof renderItems)[number]) => {
+  const renderFeedItem = (r: RenderItem) => {
     if (r.kind === 'carousel') {
       return (
         <Carousel key={r.key} category={r.category} index={r.index} isActive={activeIndex === r.index} />
@@ -176,14 +185,28 @@ export default function VideoFeed() {
         scrollPaddingTop: 'calc(env(safe-area-inset-top) + 42px)',
       }}
     >
-      {renderItems.slice(0, FREE_SCROLL_AFTER).map((r) => renderFeedItem(r))}
+      {areaGroups.map(({ area1, area3, area5 }, loopIdx) => (
+        <Fragment key={`loop-${loopIdx}`}>
+          {/* ── Area 1 (snap) ── */}
+          {area1.map(renderFeedItem)}
 
-      {/* Snap → free-scroll boundary */}
-      <div ref={startSentinelRef} style={{ height: 1 }} />
-      <FreeScrollCards />
-      <div ref={endSentinelRef} style={{ height: 1 }} />
+          {/* ── Area 2 (smooth) ── */}
+          <div style={{ height: 1 }} data-zone-id={`a${loopIdx}`} data-zone-type="start" />
+          <FreeScrollCards />
+          <div style={{ height: 1 }} data-zone-id={`a${loopIdx}`} data-zone-type="end" />
 
-      {renderItems.slice(FREE_SCROLL_AFTER).map((r) => renderFeedItem(r))}
+          {/* ── Area 3 (snap) ── */}
+          {area3.map(renderFeedItem)}
+
+          {/* ── Area 4 (smooth) ── */}
+          <div style={{ height: 1 }} data-zone-id={`b${loopIdx}`} data-zone-type="start" />
+          <FreeScrollCards />
+          <div style={{ height: 1 }} data-zone-id={`b${loopIdx}`} data-zone-type="end" />
+
+          {/* ── Area 5 (snap) ── */}
+          {area5.map(renderFeedItem)}
+        </Fragment>
+      ))}
     </div>
   )
 }
