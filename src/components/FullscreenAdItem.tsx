@@ -185,7 +185,7 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
 
       </div>
 
-      {/* Top-centre: Werbepause pill with embedded countdown — disappears after expiry */}
+      {/* Top-centre: Werbepause pill — border drains yellow→grey over 3s, then disappears */}
       {item.isWerbepause && !expired && (
         <div
           style={{
@@ -199,59 +199,50 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
             pointerEvents: 'none',
           }}
         >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            background: 'rgba(255,255,255,0.14)',
-            backdropFilter: 'blur(6px)',
-            WebkitBackdropFilter: 'blur(6px)',
-            border: '1px solid #FFBE00',
-            borderRadius: 99,
-            padding: '6px 12px 6px 8px',
-          }}
-        >
-          {/* Countdown ring — grey outline always visible, yellow drains during countdown */}
           <div
-            key={isActive ? 1 : 0}
-            style={{ position: 'relative', width: 22, height: 22, flexShrink: 0 }}
-          >
-            <svg
-              width="22" height="22"
-              viewBox="0 0 22 22"
-              style={{ position: 'absolute', top: 0, left: 0, transform: 'rotate(-90deg)' }}
-            >
-              <circle cx="11" cy="11" r="8" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" />
-              {!expired && (
-                <circle
-                  cx="11" cy="11" r="8"
-                  fill="none"
-                  stroke="#FFD700"
-                  strokeWidth="2"
-                  strokeDasharray="50.27"
-                  strokeDashoffset="0"
-                  strokeLinecap="round"
-                  style={{ animation: isActive ? 'werbepause-countdown-small 3s linear forwards' : 'none' }}
-                />
-              )}
-            </svg>
-          </div>
-
-          <span
             style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase' as const,
-              color: '#fff',
-              minWidth: 72,
-              textAlign: 'center',
+              position: 'relative',
+              height: 28,
+              width: 110,
+              borderRadius: 99,
+              background: 'rgba(255,255,255,0.14)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            {expired ? 'Anzeige' : 'Werbepause'}
-          </span>
-        </div>
+            {/* SVG border — grey base always visible, yellow drains over 3s */}
+            <svg
+              width="110" height="28"
+              viewBox="0 0 110 28"
+              style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
+            >
+              <rect x="0.5" y="0.5" width="109" height="27" rx="13.5" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
+              <rect
+                key={isActive ? 1 : 0}
+                x="0.5" y="0.5" width="109" height="27" rx="13.5"
+                fill="none"
+                stroke="#FFBE00"
+                strokeWidth="1"
+                strokeDasharray="248.8"
+                strokeDashoffset="0"
+                style={{ animation: isActive ? 'werbepause-border-drain 3s linear forwards' : 'none' }}
+              />
+            </svg>
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase' as const,
+                color: '#fff',
+              }}
+            >
+              Werbepause
+            </span>
+          </div>
         </div>
       )}
 
