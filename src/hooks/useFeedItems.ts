@@ -3,7 +3,7 @@ import type { FeedItem } from '../types/feed'
 
 const MRSS_NS = 'https://search.yahoo.com/mrss/'
 
-const FULLSCREEN_ADS: FeedItem[] = [
+export const FULLSCREEN_ADS: FeedItem[] = [
   {
     id: 'feed-ad-1',
     type: 'fullscreenAd',
@@ -26,26 +26,6 @@ const FULLSCREEN_ADS: FeedItem[] = [
   },
 ]
 
-const SCROLL_REVEAL_ADS: FeedItem[] = [
-  {
-    id: 'scroll-reveal-1',
-    type: 'scrollRevealAd',
-    videoSrc: '/images/ads/interscroller-video.mp4',
-    advertiser: 'Premium Partner',
-    adHeadline: 'Entdecke die neue Kollektion',
-    adCta: 'Jetzt entdecken',
-    viewportSize: 'large',
-  },
-  {
-    id: 'scroll-reveal-2',
-    type: 'scrollRevealAd',
-    imageSrc: '/images/ads/underscroller.png',
-    advertiser: 'Premium Partner',
-    adHeadline: 'Exklusiv für dich',
-    adCta: 'Mehr erfahren',
-    viewportSize: 'large',
-  },
-]
 
 function hashInt(s: string): number {
   let h = 0
@@ -55,7 +35,7 @@ function hashInt(s: string): number {
   return Math.abs(h)
 }
 
-const MAX_ORGANIC = 12
+const MAX_ORGANIC = 16
 
 function parseItems(xml: Document): FeedItem[] {
   return Array.from(xml.querySelectorAll('channel > item')).slice(0, MAX_ORGANIC).map(item => {
@@ -101,14 +81,14 @@ function parseItems(xml: Document): FeedItem[] {
   })
 }
 
-// Inject all ad formats at fixed positions within the organic list.
-// Fullscreen ads: positions 2 and 7. Interscroller: 12. Underscroller: 17.
-function injectAds(organic: FeedItem[]): FeedItem[] {
-  const result = [...organic]
-  result.splice(2, 0, FULLSCREEN_ADS[0])
-  result.splice(7, 0, FULLSCREEN_ADS[1])
-  result.splice(12, 0, SCROLL_REVEAL_ADS[0])
-  result.splice(17, 0, SCROLL_REVEAL_ADS[1])
+// If the feed returns fewer than MAX_ORGANIC items, cycle from the start to fill all slots.
+function cycleFill(items: FeedItem[]): FeedItem[] {
+  if (items.length === 0) return []
+  const result: FeedItem[] = []
+  for (let i = 0; i < MAX_ORGANIC; i++) {
+    const source = items[i % items.length]
+    result.push(i < items.length ? source : { ...source, id: `${source.id}-cycle${i}` })
+  }
   return result
 }
 
@@ -125,7 +105,7 @@ export function useFeedItems() {
       })
       .then(text => {
         const doc = new DOMParser().parseFromString(text, 'application/xml')
-        setItems(injectAds(parseItems(doc)))
+        setItems(cycleFill(parseItems(doc)))
       })
       .catch(err => setError(err instanceof Error ? err : new Error(String(err))))
       .finally(() => setLoading(false))
