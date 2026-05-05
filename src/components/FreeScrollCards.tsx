@@ -1,5 +1,6 @@
 const CARD_H = 'calc(100dvh - env(safe-area-inset-top) - 94px)'
 const CARD_W = 'calc(100% - 16px)'
+const BG = '#0d0d0d'
 
 function Card({ marginBottom = 0, marginTop = 0 }: { marginBottom?: number; marginTop?: number }) {
   return (
@@ -56,14 +57,19 @@ export default function FreeScrollCards() {
         />
       </div>
 
-      {/* [B] Content overlay — pulled up by -250px so it starts at wrapper top, z: 2 */}
-      {/* Opaque white cards hide the ad; transparent window reveals it */}
-      <div style={{ marginTop: -250, position: 'relative', zIndex: 2 }}>
+      {/* [B-top] Cards 1+2 + Anzeige bar — dark bg fills rounded card corners, z: 2 */}
+      {/* margin-top: -250 pulls this up to align with the top of the wrapper */}
+      <div style={{ position: 'relative', zIndex: 2, background: BG, marginTop: -250 }}>
         <Card marginBottom={16} />
         <Card marginBottom={8} />
         <LabelBar>Anzeige</LabelBar>
-        {/* Window — no background, sticky ad shows through */}
-        <div style={{ height: 274, background: 'transparent' }} />
+      </div>
+
+      {/* Window — bare transparent gap; sticky ad (z: 1) paints through here */}
+      <div style={{ height: 274 }} />
+
+      {/* [B-bottom] Weiter label + Cards 3+4 — dark bg fills card corners, z: 2 */}
+      <div style={{ position: 'relative', zIndex: 2, background: BG }}>
         <LabelBar>Weiter mit BILD</LabelBar>
         <Card marginTop={8} marginBottom={16} />
         <Card />
