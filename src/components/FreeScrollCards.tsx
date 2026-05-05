@@ -202,7 +202,7 @@ export default function FreeScrollCards() {
           <>
             <ArticleCard data={BAHN_ARTICLE} marginBottom={16} />
             <DoubleCard
-              marginBottom={8}
+              marginBottom={16}
               top={<MiniArticleCard data={DAX_ARTICLE} />}
               bottom={<PodcastCard />}
             />
@@ -211,7 +211,7 @@ export default function FreeScrollCards() {
         bottomCards={
           <>
             <DoubleCard
-              marginTop={8}
+              marginTop={16}
               marginBottom={16}
               top={<MiniPodcastCard />}
               bottom={<MiniArticleCard data={BAHN2_ARTICLE} />}
