@@ -143,48 +143,49 @@ export default function Carousel({ category, index, isActive }: Props) {
         ))}
       </div>
 
-      {/* Bottom bar — pill left · dots centre · swipe hand right */}
+      {/* Swipe hand — centred, ~1/3 from bottom, fades after 4s */}
       <div
         style={{
           position: 'absolute',
-          bottom: 8,
-          left: 16,
-          right: 8,
+          bottom: '33%',
+          left: 0,
+          right: 0,
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          zIndex: 20,
+          justifyContent: 'center',
           pointerEvents: 'none',
+          zIndex: 10,
+          opacity: indicatorVisible ? 1 : 0,
+          transition: 'opacity 0.6s ease',
         }}
       >
-        {/* Camera pill — bottom left */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            background: '#fff',
-            borderRadius: 24,
-            padding: '8px 12px',
-            opacity: isActive ? 1 : 0,
-            transition: 'opacity 0.25s ease',
-          }}
-        >
-          <img src="/icons/camera.svg" width={24} height={24} alt="" style={{ filter: 'invert(1)' }} />
-          <span
-            style={{
-              fontSize: 16,
-              fontWeight: 900,
-              color: '#212529',
-              lineHeight: 1,
-              fontVariantNumeric: 'tabular-nums',
-            }}
-          >
-            {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
-          </span>
+        <div key={isActive ? 1 : 0} className="swipe-hint">
+          <img
+            src="/icons/swipe.svg"
+            width={68}
+            height={64}
+            alt=""
+            style={{ filter: 'drop-shadow(0 1px 8px rgba(0,0,0,0.7))', display: 'block' }}
+          />
         </div>
+      </div>
 
-        {/* Pagination dots — centre */}
+      {/* Bottom row — dots centred, camera pill pinned right */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 16,
+          left: 12,
+          right: 12,
+          display: 'flex',
+          alignItems: 'center',
+          pointerEvents: 'none',
+          zIndex: 20,
+        }}
+      >
+        {/* Left spacer — mirrors pill width to keep dots truly centred */}
+        <div style={{ flex: 1 }} />
+
+        {/* Pagination dots */}
         <div
           style={{
             display: 'flex',
@@ -210,20 +211,34 @@ export default function Carousel({ category, index, isActive }: Props) {
           ))}
         </div>
 
-        {/* Swipe hand — right, fades out after 4s */}
-        <div
-          style={{
-            opacity: indicatorVisible ? 1 : 0,
-            transition: 'opacity 0.6s ease',
-          }}
-        >
-          <img
-            src="/icons/swipe.svg"
-            width={68}
-            height={64}
-            alt=""
-            style={{ filter: 'drop-shadow(0 1px 8px rgba(0,0,0,0.7))', display: 'block' }}
-          />
+        {/* Right spacer + camera pill */}
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              background: '#fff',
+              borderRadius: 24,
+              padding: '8px 12px',
+              opacity: isActive ? 1 : 0,
+              transition: 'opacity 0.25s ease',
+              pointerEvents: 'auto',
+            }}
+          >
+            <img src="/icons/camera.svg" width={24} height={24} alt="" style={{ filter: 'invert(1)' }} />
+            <span
+              style={{
+                fontSize: 16,
+                fontWeight: 900,
+                color: '#212529',
+                lineHeight: 1,
+                fontVariantNumeric: 'tabular-nums',
+              }}
+            >
+              {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+            </span>
+          </div>
         </div>
       </div>
     </div>

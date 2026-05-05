@@ -121,3 +121,16 @@ button {
 .carousel-slides::-webkit-scrollbar {
   display: none;
 }
+
+/* Carousel swipe hint animation */
+@keyframes swipe-hint {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(0); }
+  65%  { transform: translateX(32px); }
+  80%  { transform: translateX(32px); }
+  100% { transform: translateX(0); }
+}
+
+.swipe-hint {
+  animation: swipe-hint 1.8s ease-in-out infinite;
+}
