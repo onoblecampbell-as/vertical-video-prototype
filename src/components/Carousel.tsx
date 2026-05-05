@@ -143,6 +143,39 @@ export default function Carousel({ category, index, isActive }: Props) {
         ))}
       </div>
 
+      {/* Counter pill — top right */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 16,
+          right: 8,
+          zIndex: 20,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          background: '#fff',
+          borderRadius: 24,
+          padding: '8px 12px',
+          opacity: isActive ? 1 : 0,
+          transition: 'opacity 0.25s ease',
+          pointerEvents: 'none',
+        }}
+      >
+        <img src="/icons/camera.svg" width={24} height={24} alt="" />
+        <span
+          style={{
+            fontSize: 16,
+            fontWeight: 900,
+            color: '#212529',
+            letterSpacing: 0,
+            lineHeight: 1,
+            fontVariantNumeric: 'tabular-nums',
+          }}
+        >
+          {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+        </span>
+      </div>
+
       {/* Bottom indicator row */}
       <div
         style={{
