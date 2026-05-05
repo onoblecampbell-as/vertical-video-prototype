@@ -46,7 +46,7 @@ export default function Carousel({ category, index, isActive }: Props) {
       return
     }
     setIndicatorVisible(true)
-    const t = setTimeout(() => setIndicatorVisible(false), 10000)
+    const t = setTimeout(() => setIndicatorVisible(false), 4000)
     return () => clearTimeout(t)
   }, [isActive])
 
@@ -143,55 +143,48 @@ export default function Carousel({ category, index, isActive }: Props) {
         ))}
       </div>
 
-      {/* Counter pill — top right */}
+      {/* Bottom bar — pill left · dots centre · swipe hand right */}
       <div
         style={{
           position: 'absolute',
-          top: 16,
+          bottom: 8,
+          left: 16,
           right: 8,
-          zIndex: 20,
           display: 'flex',
           alignItems: 'center',
-          gap: 8,
-          background: '#fff',
-          borderRadius: 24,
-          padding: '8px 12px',
-          opacity: isActive ? 1 : 0,
-          transition: 'opacity 0.25s ease',
+          justifyContent: 'space-between',
+          zIndex: 20,
           pointerEvents: 'none',
         }}
       >
-        <img src="/icons/camera.svg" width={24} height={24} alt="" style={{ filter: 'invert(1)' }} />
-        <span
+        {/* Camera pill — bottom left */}
+        <div
           style={{
-            fontSize: 16,
-            fontWeight: 900,
-            color: '#212529',
-            letterSpacing: 0,
-            lineHeight: 1,
-            fontVariantNumeric: 'tabular-nums',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            background: '#fff',
+            borderRadius: 24,
+            padding: '8px 12px',
+            opacity: isActive ? 1 : 0,
+            transition: 'opacity 0.25s ease',
           }}
         >
-          {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
-        </span>
-      </div>
+          <img src="/icons/camera.svg" width={24} height={24} alt="" style={{ filter: 'invert(1)' }} />
+          <span
+            style={{
+              fontSize: 16,
+              fontWeight: 900,
+              color: '#212529',
+              lineHeight: 1,
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
+            {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+          </span>
+        </div>
 
-      {/* Bottom indicator row */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 32,
-          left: 0,
-          right: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 10,
-          pointerEvents: 'none',
-          zIndex: 10,
-        }}
-      >
-        {/* Pagination dots — permanent while card is active */}
+        {/* Pagination dots — centre */}
         <div
           style={{
             display: 'flex',
@@ -217,7 +210,7 @@ export default function Carousel({ category, index, isActive }: Props) {
           ))}
         </div>
 
-        {/* Swipe icon — fades out after 10s */}
+        {/* Swipe hand — right, fades out after 4s */}
         <div
           style={{
             opacity: indicatorVisible ? 1 : 0,
@@ -226,8 +219,8 @@ export default function Carousel({ category, index, isActive }: Props) {
         >
           <img
             src="/icons/swipe.svg"
-            width={34}
-            height={32}
+            width={68}
+            height={64}
             alt=""
             style={{ filter: 'drop-shadow(0 1px 8px rgba(0,0,0,0.7))', display: 'block' }}
           />
