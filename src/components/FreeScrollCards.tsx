@@ -1,6 +1,17 @@
+import ArticleCard from './ArticleCard'
+import type { ArticleCardData } from './ArticleCard'
+
 const CARD_H = 'calc(100dvh - env(safe-area-inset-top) - 94px)'
 const CARD_W = 'calc(100% - 16px)'
 const BG = '#0d0d0d'
+
+const BAHN_ARTICLE: ArticleCardData = {
+  heroSrc: '/images/articles/bahn-hero.png',
+  kicker: 'Minus 760 Millionen Euro',
+  title: 'Mega-Verlust bei der Deutschen Bahn',
+  description: 'Die Deutschen Bahn (DB) hat im ersten Halbjahr einen Verlust in Höhe von 760 Millionen Euro eingefahren',
+  likeCount: 120,
+}
 
 function Card({ marginBottom = 0, marginTop = 0 }: { marginBottom?: number; marginTop?: number }) {
   return (
@@ -109,7 +120,7 @@ export default function FreeScrollCards() {
         }
         topCards={
           <>
-            <Card marginBottom={16} />
+            <ArticleCard data={BAHN_ARTICLE} marginBottom={16} />
             <Card marginBottom={8} />
           </>
         }
