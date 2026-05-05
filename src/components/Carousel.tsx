@@ -46,7 +46,7 @@ export default function Carousel({ category, index, isActive }: Props) {
       return
     }
     setIndicatorVisible(true)
-    const t = setTimeout(() => setIndicatorVisible(false), 2500)
+    const t = setTimeout(() => setIndicatorVisible(false), 10000)
     return () => clearTimeout(t)
   }, [isActive])
 
@@ -143,7 +143,7 @@ export default function Carousel({ category, index, isActive }: Props) {
         ))}
       </div>
 
-      {/* Swipe indicator — fades in on activation, auto-dismisses after 2.5s */}
+      {/* Bottom indicator row */}
       <div
         style={{
           position: 'absolute',
@@ -156,12 +156,18 @@ export default function Carousel({ category, index, isActive }: Props) {
           gap: 10,
           pointerEvents: 'none',
           zIndex: 10,
-          opacity: indicatorVisible ? 1 : 0,
-          transition: 'opacity 0.6s ease',
         }}
       >
-        {/* Pagination dots — one per slide, active slide highlighted */}
-        <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+        {/* Pagination dots — permanent while card is active */}
+        <div
+          style={{
+            display: 'flex',
+            gap: 5,
+            alignItems: 'center',
+            opacity: isActive ? 1 : 0,
+            transition: 'opacity 0.25s ease',
+          }}
+        >
           {slides.map((_, i) => (
             <img
               key={i}
@@ -177,13 +183,22 @@ export default function Carousel({ category, index, isActive }: Props) {
             />
           ))}
         </div>
-        <img
-          src="/icons/swipe.svg"
-          width={34}
-          height={32}
-          alt=""
-          style={{ filter: 'drop-shadow(0 1px 8px rgba(0,0,0,0.7))' }}
-        />
+
+        {/* Swipe icon — fades out after 10s */}
+        <div
+          style={{
+            opacity: indicatorVisible ? 1 : 0,
+            transition: 'opacity 0.6s ease',
+          }}
+        >
+          <img
+            src="/icons/swipe.svg"
+            width={34}
+            height={32}
+            alt=""
+            style={{ filter: 'drop-shadow(0 1px 8px rgba(0,0,0,0.7))', display: 'block' }}
+          />
+        </div>
       </div>
     </div>
   )
