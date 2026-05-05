@@ -55,8 +55,10 @@ function hashInt(s: string): number {
   return Math.abs(h)
 }
 
+const MAX_ORGANIC = 12
+
 function parseItems(xml: Document): FeedItem[] {
-  return Array.from(xml.querySelectorAll('channel > item')).map(item => {
+  return Array.from(xml.querySelectorAll('channel > item')).slice(0, MAX_ORGANIC).map(item => {
     const guid = item.querySelector('guid')?.textContent?.trim() ?? ''
     const title = item.querySelector('title')?.textContent?.trim() ?? ''
     const description = item.querySelector('description')?.textContent?.trim() ?? ''
