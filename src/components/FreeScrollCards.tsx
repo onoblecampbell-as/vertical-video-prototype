@@ -50,17 +50,19 @@ function AnzeigeBar() {
   )
 }
 
-// Self-contained interscroller slot — sticky ad background + opaque cards above + transparent window
+// Self-contained interscroller slot — sticky ad background + opaque cards above/below + transparent window
 function InterscrollerSlot({
-  cards,
+  topCards,
+  bottomCards,
   creative,
 }: {
-  cards: React.ReactNode
+  topCards: React.ReactNode
+  bottomCards: React.ReactNode
   creative: React.ReactNode
 }) {
   return (
     <div style={{ position: 'relative' }}>
-      {/* Sticky ad — full viewport height, z: 1, visible through window below */}
+      {/* Sticky ad — full viewport height, z: 1, visible through window */}
       <div
         style={{
           position: 'sticky',
@@ -77,14 +79,19 @@ function InterscrollerSlot({
         {creative}
       </div>
 
-      {/* Opaque content above window — dark bg fills card corner gaps, z: 2 */}
+      {/* [B-top] Opaque cards above window — dark bg fills card corner gaps, z: 2 */}
       <div style={{ position: 'relative', zIndex: 2, background: BG, marginTop: '-100dvh' }}>
-        {cards}
+        {topCards}
         <AnzeigeBar />
       </div>
 
       {/* Transparent window — sticky ad shows through here */}
       <div style={{ height: 274 }} />
+
+      {/* [B-bottom] Opaque cards below window — covers ad after reveal, z: 2 */}
+      <div style={{ position: 'relative', zIndex: 2, background: BG }}>
+        {bottomCards}
+      </div>
     </div>
   )
 }
@@ -92,7 +99,6 @@ function InterscrollerSlot({
 export default function FreeScrollCards() {
   return (
     <div style={{ paddingBottom: 12 }}>
-
       <InterscrollerSlot
         creative={
           <img
@@ -101,20 +107,19 @@ export default function FreeScrollCards() {
             style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center top', display: 'block' }}
           />
         }
-        cards={
+        topCards={
           <>
             <Card marginBottom={16} />
             <Card marginBottom={8} />
           </>
         }
+        bottomCards={
+          <>
+            <Card marginTop={16} marginBottom={16} />
+            <Card />
+          </>
+        }
       />
-
-      {/* Cards 3+4 — dark bg keeps corner gaps consistent */}
-      <div style={{ position: 'relative', zIndex: 2, background: BG }}>
-        <Card marginTop={16} marginBottom={16} />
-        <Card />
-      </div>
-
     </div>
   )
 }
