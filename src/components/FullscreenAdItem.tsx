@@ -67,28 +67,37 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
       {/* UI overlay — hidden until card is active */}
       <div style={{ opacity: isActive ? 1 : 0, transition: 'opacity 0.25s ease', pointerEvents: isActive ? 'auto' : 'none' }}>
 
-      {/* Top-right: ad label — skippable ads only */}
+      {/* Top-centre: ad label — skippable ads only */}
       {!item.isWerbepause && (
         <div
           style={{
             position: 'absolute',
             top: 16,
-            right: 16,
+            left: 0,
+            right: 0,
+            display: 'flex',
+            justifyContent: 'center',
             zIndex: 10,
-            background: 'rgba(255,255,255,0.14)',
-            backdropFilter: 'blur(6px)',
-            WebkitBackdropFilter: 'blur(6px)',
-            border: '1px solid #FFBE00',
-            borderRadius: 99,
-            padding: '4px 11px',
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase' as const,
-            color: '#fff',
+            pointerEvents: 'none',
           }}
         >
-          Anzeige
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.14)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+              border: '1px solid #FFBE00',
+              borderRadius: 99,
+              padding: '4px 11px',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase' as const,
+              color: '#fff',
+            }}
+          >
+            Anzeige
+          </div>
         </div>
       )}
 
@@ -176,14 +185,22 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
 
       </div>
 
-      {/* Bottom-right: Werbepause pill with embedded countdown — disappears after expiry */}
+      {/* Top-centre: Werbepause pill with embedded countdown — disappears after expiry */}
       {item.isWerbepause && !expired && (
         <div
           style={{
             position: 'absolute',
-            bottom: 28,
-            right: 20,
+            top: 16,
+            left: 0,
+            right: 0,
             zIndex: 10,
+            display: 'flex',
+            justifyContent: 'center',
+            pointerEvents: 'none',
+          }}
+        >
+        <div
+          style={{
             display: 'flex',
             alignItems: 'center',
             gap: 8,
@@ -234,6 +251,7 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
           >
             {expired ? 'Anzeige' : 'Werbepause'}
           </span>
+        </div>
         </div>
       )}
 
