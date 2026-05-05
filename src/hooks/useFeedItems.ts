@@ -38,17 +38,25 @@ function hashInt(s: string): number {
 const MAX_ORGANIC = 16
 
 function parseItems(xml: Document): FeedItem[] {
-  return Array.from(xml.querySelectorAll('channel > item')).slice(0, MAX_ORGANIC).map(item => {
+  const seenVideoSrcs = new Set<string>()
+  const unique: FeedItem[] = []
+
+  for (const item of Array.from(xml.querySelectorAll('channel > item'))) {
+    if (unique.length === MAX_ORGANIC) break
+
+    const mediaContents = Array.from(item.getElementsByTagNameNS(MRSS_NS, 'content'))
+    const videoSrc = mediaContents
+      .find(el => el.getAttribute('type') === 'video/mp4')
+      ?.getAttribute('url') ?? ''
+
+    // Skip items with no video or a duplicate video URL
+    if (!videoSrc || seenVideoSrcs.has(videoSrc)) continue
+    seenVideoSrcs.add(videoSrc)
+
     const guid = item.querySelector('guid')?.textContent?.trim() ?? ''
     const title = item.querySelector('title')?.textContent?.trim() ?? ''
     const description = item.querySelector('description')?.textContent?.trim() ?? ''
     const link = item.querySelector('link')?.textContent?.trim() ?? ''
-
-    const mediaContents = Array.from(item.getElementsByTagNameNS(MRSS_NS, 'content'))
-
-    const videoSrc = mediaContents
-      .find(el => el.getAttribute('type') === 'video/mp4')
-      ?.getAttribute('url') ?? ''
 
     const posterSrc = (
       mediaContents.find(
@@ -63,7 +71,7 @@ function parseItems(xml: Document): FeedItem[] {
       .slice(0, 4)
 
     const h = hashInt(guid)
-    return {
+    unique.push({
       id: guid,
       type: 'organic' as const,
       videoSrc,
@@ -77,8 +85,10 @@ function parseItems(xml: Document): FeedItem[] {
       shares: 200 + (h % 1800),
       hasLinkout: !!link,
       linkoutCta: 'Zum Artikel',
-    }
-  })
+    })
+  }
+
+  return unique
 }
 
 // If the feed returns fewer than MAX_ORGANIC items, cycle from the start to fill all slots.
