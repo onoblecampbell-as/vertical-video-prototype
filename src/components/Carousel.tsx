@@ -2,9 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 import type { CarouselCategory } from '../hooks/useCarouselFeed'
 import { CAROUSEL_LABELS } from '../hooks/useCarouselFeed'
 
-// Session-level flag — hint shown once across all carousel instances
-let hintHasBeenShown = false
-
 interface Slide {
   src: string
   isAd: boolean
@@ -37,20 +34,10 @@ interface Props {
 
 export default function Carousel({ category, index, isActive }: Props) {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const [hintVisible, setHintVisible] = useState(false)
   const [indicatorVisible, setIndicatorVisible] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const slides = buildSlides(category)
   const label = CAROUSEL_LABELS[category]
-
-  // Show ghost hint on first-ever carousel exposure
-  useEffect(() => {
-    if (!isActive || hintHasBeenShown) return
-    hintHasBeenShown = true
-    setHintVisible(true)
-    const t = setTimeout(() => setHintVisible(false), 2000)
-    return () => clearTimeout(t)
-  }, [isActive])
 
   // Show swipe indicator on every activation, auto-dismiss after 2.5s
   useEffect(() => {
@@ -67,7 +54,6 @@ export default function Carousel({ category, index, isActive }: Props) {
     const el = scrollRef.current
     if (!el) return
     setCurrentSlide(Math.round(el.scrollLeft / el.clientWidth))
-    if (hintVisible) setHintVisible(false)
     if (indicatorVisible) setIndicatorVisible(false)
   }
 
@@ -130,30 +116,6 @@ export default function Carousel({ category, index, isActive }: Props) {
               }}
             />
 
-            {/* Category badge — first slide only */}
-            {i === 0 && (
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 12,
-                  left: 12,
-                  zIndex: 10,
-                  background: 'rgba(0,0,0,0.55)',
-                  backdropFilter: 'blur(6px)',
-                  WebkitBackdropFilter: 'blur(6px)',
-                  borderRadius: 99,
-                  padding: '4px 11px',
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase' as const,
-                  color: '#fff',
-                }}
-              >
-                {label}
-              </div>
-            )}
-
             {/* Ad label — ad slide only */}
             {slide.isAd && (
               <div
@@ -181,29 +143,6 @@ export default function Carousel({ category, index, isActive }: Props) {
         ))}
       </div>
 
-      {/* Slide counter — top right */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 16,
-          right: 16,
-          zIndex: 20,
-          background: 'rgba(0,0,0,0.45)',
-          opacity: isActive ? 1 : 0,
-          transition: 'opacity 0.25s ease',
-          backdropFilter: 'blur(4px)',
-          WebkitBackdropFilter: 'blur(4px)',
-          borderRadius: 99,
-          padding: '4px 11px',
-          fontSize: 12,
-          fontWeight: 600,
-          color: '#fff',
-          letterSpacing: '0.04em',
-        }}
-      >
-        {currentSlide + 1} / {slides.length}
-      </div>
-
       {/* Swipe indicator — fades in on activation, auto-dismisses after 2.5s */}
       <div
         style={{
@@ -221,15 +160,20 @@ export default function Carousel({ category, index, isActive }: Props) {
           transition: 'opacity 0.6s ease',
         }}
       >
+        {/* Pagination dots — one per slide, active slide highlighted */}
         <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
-          {[0, 1, 2].map(i => (
+          {slides.map((_, i) => (
             <img
               key={i}
               src="/icons/ellipse.svg"
               width={14}
               height={14}
               alt=""
-              style={{ opacity: i === 1 ? 1 : 0.45 }}
+              style={{
+                opacity: i === currentSlide ? 1 : 0.4,
+                filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.8))',
+                transition: 'opacity 0.2s ease',
+              }}
             />
           ))}
         </div>
@@ -240,32 +184,6 @@ export default function Carousel({ category, index, isActive }: Props) {
           alt=""
           style={{ filter: 'drop-shadow(0 1px 8px rgba(0,0,0,0.7))' }}
         />
-      </div>
-
-      {/* Ghost swipe hint — floats above the swipe indicator */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 76,
-          left: 0,
-          right: 0,
-          textAlign: 'center',
-          pointerEvents: 'none',
-          zIndex: 5,
-          opacity: isActive && hintVisible ? 1 : 0,
-          transition: 'opacity 0.4s ease',
-        }}
-      >
-        <span
-          style={{
-            fontSize: 12,
-            fontWeight: 500,
-            color: 'rgba(255,255,255,0.5)',
-            letterSpacing: '0.04em',
-          }}
-        >
-          Wische →
-        </span>
       </div>
     </div>
   )
