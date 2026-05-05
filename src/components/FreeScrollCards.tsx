@@ -104,7 +104,7 @@ function WeiterBar() {
           color: '#fff',
         }}
       >
-        Weiter mit BILD
+        Weiter mit Inhalt
       </span>
     </div>
   )
@@ -211,7 +211,7 @@ export default function FreeScrollCards() {
         bottomCards={
           <>
             <DoubleCard
-              marginTop={16}
+              marginTop={8}
               marginBottom={16}
               top={<MiniPodcastCard />}
               bottom={<MiniArticleCard data={BAHN2_ARTICLE} />}
