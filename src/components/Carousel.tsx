@@ -161,7 +161,7 @@ export default function Carousel({ category, index, isActive }: Props) {
           pointerEvents: 'none',
         }}
       >
-        <img src="/icons/camera.svg" width={24} height={24} alt="" />
+        <img src="/icons/camera.svg" width={24} height={24} alt="" style={{ filter: 'invert(1)' }} />
         <span
           style={{
             fontSize: 16,
