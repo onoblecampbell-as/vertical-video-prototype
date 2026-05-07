@@ -17,31 +17,42 @@ export default function HorizontalVideoCard({
   const cardRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const delayTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const inViewport = useRef(false)
+  const isHovered = useRef(false)
 
+  const startPreview = () => {
+    if (delayTimer.current) clearTimeout(delayTimer.current)
+    delayTimer.current = setTimeout(() => {
+      const video = videoRef.current
+      if (!video) return
+      video.currentTime = 0
+      video.play().catch(() => {})
+      setPreviewing(true)
+    }, 1000)
+  }
+
+  const stopPreview = () => {
+    if (delayTimer.current) clearTimeout(delayTimer.current)
+    const video = videoRef.current
+    if (video) {
+      video.pause()
+      video.currentTime = 0
+    }
+    setPreviewing(false)
+  }
+
+  // Intersection — mobile trigger
   useEffect(() => {
     const card = cardRef.current
     if (!card) return
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          // Entered view — start preview after 1s delay
-          delayTimer.current = setTimeout(() => {
-            const video = videoRef.current
-            if (!video) return
-            video.currentTime = 0
-            video.play().catch(() => {})
-            setPreviewing(true)
-          }, 1000)
-        } else {
-          // Left view — cancel pending delay and reset immediately
-          if (delayTimer.current) clearTimeout(delayTimer.current)
-          const video = videoRef.current
-          if (video) {
-            video.pause()
-            video.currentTime = 0
-          }
-          setPreviewing(false)
+        inViewport.current = entry.isIntersecting
+        if (entry.isIntersecting && !isHovered.current) {
+          startPreview()
+        } else if (!entry.isIntersecting) {
+          stopPreview()
         }
       },
       { threshold: 0.5 }
@@ -54,8 +65,20 @@ export default function HorizontalVideoCard({
     }
   }, [])
 
+  // Hover — desktop trigger
+  const handleMouseEnter = () => {
+    isHovered.current = true
+    startPreview()
+  }
+
+  const handleMouseLeave = () => {
+    isHovered.current = false
+    // Only stop if also out of viewport (mobile fallback stays active)
+    if (!inViewport.current) stopPreview()
+    else stopPreview()
+  }
+
   const handleVideoEnded = () => {
-    // Fade back to thumbnail after preview completes
     setPreviewing(false)
     const video = videoRef.current
     if (video) video.currentTime = 0
@@ -64,6 +87,8 @@ export default function HorizontalVideoCard({
   return (
     <div
       ref={cardRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       style={{
         height,
         width,
