@@ -214,12 +214,24 @@ export default function FreeScrollCards() {
         }
         bottomCards={
           <>
-            <DoubleCard
-              marginTop={16}
-              marginBottom={16}
-              top={<MiniPodcastCard />}
-              bottom={<MiniArticleCard data={BAHN2_ARTICLE} />}
-            />
+            <div
+              style={{
+                height: CARD_H,
+                width: CARD_W,
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                marginTop: 16,
+                marginBottom: 16,
+                flexShrink: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 16,
+              }}
+            >
+              <MiniPodcastCard />
+              <HorizontalVideoCard height={124} width="100%" />
+              <MiniArticleCard data={BAHN2_ARTICLE} />
+            </div>
           </>
         }
       />

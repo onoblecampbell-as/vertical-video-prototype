@@ -1,11 +1,11 @@
 const CARD_W = 'calc(100% - 16px)'
 
-export default function HorizontalVideoCard({ marginBottom = 0, marginTop = 0 }: { marginBottom?: number; marginTop?: number }) {
+export default function HorizontalVideoCard({ marginBottom = 0, marginTop = 0, height = 247, width = CARD_W }: { marginBottom?: number; marginTop?: number; height?: number; width?: string }) {
   return (
     <div
       style={{
-        height: 247,
-        width: CARD_W,
+        height,
+        width,
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop,
