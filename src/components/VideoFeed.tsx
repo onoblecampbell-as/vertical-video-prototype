@@ -15,6 +15,8 @@ export default function VideoFeed() {
   const [isMuted, setIsMuted] = useState(true)
   const [scrollLocked, setScrollLocked] = useState(false)
   const [inFreeScroll, setInFreeScroll] = useState(false)
+  const [bgSrcs, setBgSrcs] = useState<[string, string]>(['', ''])
+  const [activeSide, setActiveSide] = useState<0 | 1>(0)
 
   const { items, loading, error } = useFeedItems()
   const areaGroups = useAreaFeed(items)
@@ -66,6 +68,21 @@ export default function VideoFeed() {
       clearTimeout(fallback)
       clearTimeout(unlockTimer)
     }
+  }, [activeIndex, allRenderItems])
+
+  // Ambient background — crossfade poster of active feed item
+  useEffect(() => {
+    const activeRender = allRenderItems.find(r => r.index === activeIndex)
+    if (!activeRender || activeRender.kind !== 'feed') return
+    const posterSrc = activeRender.item.posterSrc
+    if (!posterSrc) return
+    const nextSide: 0 | 1 = activeSide === 0 ? 1 : 0
+    setBgSrcs(prev => {
+      const next = [...prev] as [string, string]
+      next[nextSide] = posterSrc
+      return next
+    })
+    setActiveSide(nextSide)
   }, [activeIndex, allRenderItems])
 
   const handleSkip = useCallback(() => {
@@ -170,21 +187,43 @@ export default function VideoFeed() {
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="feed-container"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        overflowY: scrollLocked ? 'hidden' : 'scroll',
-        scrollSnapType: inFreeScroll ? 'none' : 'y mandatory',
-        overscrollBehavior: 'contain',
-        background: '#0d0d0d',
-        paddingTop: 'calc(env(safe-area-inset-top) + 42px)',
-        paddingBottom: '80px',
-        scrollPaddingTop: 'calc(env(safe-area-inset-top) + 42px)',
-      }}
-    >
+    <>
+      {([0, 1] as const).map((i) => (
+        <div
+          key={i}
+          style={{
+            position: 'fixed',
+            top: -60,
+            left: -60,
+            right: -60,
+            bottom: -60,
+            backgroundImage: bgSrcs[i] ? `url(${bgSrcs[i]})` : 'none',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'blur(60px) brightness(0.18) saturate(1.8)',
+            opacity: activeSide === i ? 1 : 0,
+            transition: 'opacity 0.8s ease',
+            pointerEvents: 'none',
+            zIndex: 0,
+          }}
+        />
+      ))}
+      <div
+        ref={containerRef}
+        className="feed-container"
+        style={{
+          position: 'fixed',
+          inset: 0,
+          overflowY: scrollLocked ? 'hidden' : 'scroll',
+          scrollSnapType: inFreeScroll ? 'none' : 'y mandatory',
+          overscrollBehavior: 'contain',
+          background: 'transparent',
+          paddingTop: 'calc(env(safe-area-inset-top) + 42px)',
+          paddingBottom: '80px',
+          scrollPaddingTop: 'calc(env(safe-area-inset-top) + 42px)',
+          zIndex: 1,
+        }}
+      >
       {areaGroups.map(({ area1, area3, area5 }, loopIdx) => (
         <Fragment key={`loop-${loopIdx}`}>
           {/* ── Area 1 (snap) ── */}
@@ -207,6 +246,7 @@ export default function VideoFeed() {
           {area5.map(renderFeedItem)}
         </Fragment>
       ))}
-    </div>
+      </div>
+    </>
   )
 }
