@@ -1,5 +1,3 @@
-import { HeartIcon, ShareIcon } from './icons'
-
 export interface MiniArticleCardData {
   heroSrc: string
   kicker: string
@@ -9,14 +7,6 @@ export interface MiniArticleCardData {
 
 interface Props {
   data: MiniArticleCardData
-}
-
-function ChevronRightIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="9 18 15 12 9 6" />
-    </svg>
-  )
 }
 
 export default function MiniArticleCard({ data }: Props) {
@@ -104,62 +94,52 @@ export default function MiniArticleCard({ data }: Props) {
           {data.title}
         </h3>
 
-        {/* Action row */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingLeft: 24,
-            paddingRight: 16,
-          }}
-        >
-          {/* Left: heart + count + share */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#fff' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <HeartIcon />
+        {/* Action bar — identical to ArticleCard */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: 16, paddingRight: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <img src="/icons/heart.svg" width={22} height={22} alt="Like" />
               {data.likeCount !== undefined && (
                 <span
                   style={{
-                    fontSize: 17,
+                    fontSize: 15,
                     fontWeight: 700,
                     color: '#fff',
+                    letterSpacing: '0.4px',
                     fontFamily: '"Gotham XNarrow", sans-serif',
-                    letterSpacing: '0.5px',
-                    textTransform: 'uppercase',
                   }}
                 >
                   {data.likeCount}
                 </span>
               )}
             </div>
-            <ShareIcon />
+            <img src="/icons/share.svg" width={20} height={24} alt="Share" />
           </div>
-
-          {/* Right: Mehr lesen */}
-          <div
+          <button
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 4,
-              color: '#fff',
+              gap: 3,
+              background: 'none',
+              border: 'none',
               cursor: 'pointer',
+              padding: 0,
             }}
           >
             <span
               style={{
-                fontSize: 17,
+                fontSize: 14,
                 fontWeight: 700,
-                fontFamily: '"Gotham XNarrow", sans-serif',
-                letterSpacing: '0.5px',
-                textTransform: 'uppercase',
                 color: '#fff',
+                letterSpacing: '0.6px',
+                textTransform: 'uppercase',
+                fontFamily: '"Gotham XNarrow", sans-serif',
               }}
             >
               Mehr lesen
             </span>
-            <ChevronRightIcon />
-          </div>
+            <span style={{ fontSize: 18, color: '#fff', lineHeight: 1 }}>›</span>
+          </button>
         </div>
       </div>
     </div>
