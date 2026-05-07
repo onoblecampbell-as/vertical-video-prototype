@@ -19,7 +19,7 @@ export default function HorizontalVideoCard({ marginBottom = 0, marginTop = 0 }:
       <img
         src="/images/horizontal-video-thumb.jpg"
         alt=""
-        style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
       />
     </div>
   )
