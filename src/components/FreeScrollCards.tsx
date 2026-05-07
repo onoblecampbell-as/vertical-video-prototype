@@ -7,6 +7,7 @@ import MiniPodcastCard from './MiniPodcastCard'
 import HorizontalVideoCard from './HorizontalVideoCard'
 
 const CARD_H = 'calc(var(--real-vh, 100dvh) - env(safe-area-inset-top) - 94px)'
+const HALF_CARD_H = 'calc((var(--real-vh, 100dvh) - env(safe-area-inset-top) - 94px - 16px) / 2)'
 const CARD_W = 'calc(100% - 16px)'
 const BG = '#0d0d0d'
 
@@ -214,22 +215,11 @@ export default function FreeScrollCards() {
         }
         bottomCards={
           <>
-            <div
-              style={{
-                height: CARD_H,
-                width: CARD_W,
-                marginLeft: 'auto',
-                marginRight: 'auto',
-                marginTop: 16,
-                marginBottom: 16,
-                flexShrink: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 16,
-              }}
-            >
+            <div style={{ height: HALF_CARD_H, width: CARD_W, marginLeft: 'auto', marginRight: 'auto', marginTop: 16, flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
               <MiniPodcastCard />
-              <HorizontalVideoCard height={247} width="100%" />
+            </div>
+            <HorizontalVideoCard height={247} marginTop={16} marginBottom={16} />
+            <div style={{ height: HALF_CARD_H, width: CARD_W, marginLeft: 'auto', marginRight: 'auto', marginBottom: 16, flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
               <MiniArticleCard data={BAHN2_ARTICLE} />
             </div>
           </>
