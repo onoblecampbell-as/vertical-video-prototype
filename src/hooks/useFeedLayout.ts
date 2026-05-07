@@ -45,7 +45,7 @@ function buildAreaGroups(organic: FeedItem[]): AreaGroup[] {
     const area3: RenderItem[] = [
       f(organic[6],  idx++, loop),
       f(organic[7],  idx++, loop),
-      c('marathon',  idx++, loop),
+      c('timmy',     idx++, loop),
       f(ad1,         idx++, loop),
       f(organic[8],  idx++, loop),
       f(organic[9],  idx++, loop),
