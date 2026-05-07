@@ -13,14 +13,24 @@ interface Props {
 export default function FullscreenAdItem({ item, index, isActive, isMuted, onSkip }: Props) {
   const [expired, setExpired] = useState(false)
   const [canSkip, setCanSkip] = useState(false)
+  const [countdown, setCountdown] = useState(3)
 
   // Werbepause: flip label + text after 3 s
   useEffect(() => {
     if (!item.isWerbepause) return
     setExpired(false)
+    setCountdown(3)
     if (!isActive) return
     const t = setTimeout(() => setExpired(true), 3000)
     return () => clearTimeout(t)
+  }, [isActive, item.isWerbepause])
+
+  // Werbepause countdown: 3 → 2 → 1
+  useEffect(() => {
+    if (!item.isWerbepause || !isActive) return
+    const t1 = setTimeout(() => setCountdown(2), 1000)
+    const t2 = setTimeout(() => setCountdown(1), 2000)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [isActive, item.isWerbepause])
 
   // Skippable ad: enable skip button after skipAfterSeconds
@@ -203,7 +213,7 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
             style={{
               position: 'relative',
               height: 28,
-              width: 110,
+              width: 128,
               borderRadius: 99,
               background: 'rgba(255,255,255,0.14)',
               backdropFilter: 'blur(6px)',
@@ -211,22 +221,23 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              gap: 5,
             }}
           >
             {/* SVG border — grey base always visible, yellow drains over 3s */}
             <svg
-              width="110" height="28"
-              viewBox="0 0 110 28"
+              width="128" height="28"
+              viewBox="0 0 128 28"
               style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
             >
-              <rect x="0.5" y="0.5" width="109" height="27" rx="13.5" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
+              <rect x="0.5" y="0.5" width="127" height="27" rx="13.5" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
               <rect
                 key={isActive ? 1 : 0}
-                x="0.5" y="0.5" width="109" height="27" rx="13.5"
+                x="0.5" y="0.5" width="127" height="27" rx="13.5"
                 fill="none"
                 stroke="#FFBE00"
                 strokeWidth="1"
-                strokeDasharray="248.8"
+                strokeDasharray="288.8"
                 strokeDashoffset="0"
                 style={{ animation: isActive ? 'werbepause-border-drain 3s linear forwards' : 'none' }}
               />
@@ -241,6 +252,17 @@ export default function FullscreenAdItem({ item, index, isActive, isMuted, onSki
               }}
             >
               Werbepause
+            </span>
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                color: '#FFBE00',
+                lineHeight: 1,
+                minWidth: 8,
+              }}
+            >
+              {countdown}
             </span>
           </div>
         </div>
