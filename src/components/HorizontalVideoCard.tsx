@@ -25,9 +25,17 @@ export default function HorizontalVideoCard({
     delayTimer.current = setTimeout(() => {
       const video = videoRef.current
       if (!video) return
-      video.currentTime = 0
-      video.play().catch(() => {})
-      setPreviewing(true)
+      const doPlay = () => {
+        video.currentTime = 0
+        video.play().catch(() => {})
+        setPreviewing(true)
+      }
+      if (video.readyState >= 1) {
+        doPlay()
+      } else {
+        video.addEventListener('loadedmetadata', doPlay, { once: true })
+        video.load()
+      }
     }, 1000)
   }
 
@@ -135,6 +143,7 @@ export default function HorizontalVideoCard({
         }}
         playsInline
         muted
+        preload="metadata"
         onEnded={handleVideoEnded}
       />
     </div>
