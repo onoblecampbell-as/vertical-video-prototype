@@ -229,7 +229,7 @@ export default function FreeScrollCards() {
               }}
             >
               <MiniPodcastCard />
-              <HorizontalVideoCard height={124} width="100%" />
+              <HorizontalVideoCard height={247} width="100%" />
               <MiniArticleCard data={BAHN2_ARTICLE} />
             </div>
           </>
