@@ -208,6 +208,37 @@ export default function Carousel({ category, index, isActive }: Props) {
         </div>
       </div>
 
+      {/* Zum Artikel — bottom left, last slide only */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 48,
+          left: 20,
+          zIndex: 20,
+          opacity: isActive && currentSlide === slides.length - 1 ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+          pointerEvents: isActive && currentSlide === slides.length - 1 ? 'auto' : 'none',
+        }}
+      >
+        <button
+          style={{
+            padding: '10px 20px',
+            background: 'rgba(255,255,255,0.15)',
+            color: '#fff',
+            border: '1px solid rgba(255,255,255,0.35)',
+            borderRadius: 8,
+            fontWeight: 700,
+            fontSize: 13,
+            cursor: 'pointer',
+            letterSpacing: '0.03em',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+          }}
+        >
+          Zum Artikel
+        </button>
+      </div>
+
       {/* Pagination dots — bottom centre */}
       <div
         style={{
