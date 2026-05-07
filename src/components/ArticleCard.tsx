@@ -82,6 +82,7 @@ export default function ArticleCard({ data, marginTop = 0, marginBottom = 0 }: P
               lineHeight: 1.1,
               fontFamily: '"Gotham XNarrow", sans-serif',
               textShadow: '0px 2px 3px rgba(0,0,0,0.35)',
+              textAlign: 'center',
             }}
           >
             {data.kicker}
@@ -95,6 +96,7 @@ export default function ArticleCard({ data, marginTop = 0, marginBottom = 0 }: P
               lineHeight: 1,
               fontFamily: '"Gotham Condensed", sans-serif',
               textShadow: '0px 2px 3px rgba(0,0,0,0.25)',
+              textAlign: 'center',
             }}
           >
             {data.title}
@@ -110,6 +112,7 @@ export default function ArticleCard({ data, marginTop = 0, marginBottom = 0 }: P
             color: 'rgba(255,255,255,0.9)',
             lineHeight: 1.35,
             fontFamily: '"Gotham XNarrow", sans-serif',
+            textAlign: 'center',
           }}
         >
           {data.description}
