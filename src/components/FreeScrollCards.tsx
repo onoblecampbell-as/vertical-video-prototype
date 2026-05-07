@@ -4,7 +4,6 @@ import MiniArticleCard from './MiniArticleCard'
 import type { MiniArticleCardData } from './MiniArticleCard'
 import PodcastCard from './PodcastCard'
 import MiniPodcastCard from './MiniPodcastCard'
-import MiniVideoCard from './MiniVideoCard'
 import HorizontalVideoCard from './HorizontalVideoCard'
 
 const CARD_H = 'calc(var(--real-vh, 100dvh) - env(safe-area-inset-top) - 94px)'
