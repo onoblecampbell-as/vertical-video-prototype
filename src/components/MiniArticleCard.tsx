@@ -45,20 +45,19 @@ export default function MiniArticleCard({ data }: Props) {
         }}
       />
 
-      {/* Content — pinned to bottom */}
+      {/* Kicker + Title — centred horizontally and vertically */}
       <div
         style={{
           position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: '96px 0 16px',
+          inset: 0,
           display: 'flex',
           flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
           gap: 8,
+          padding: '0 16px',
         }}
       >
-        {/* Kicker */}
         <p
           style={{
             margin: 0,
@@ -69,14 +68,10 @@ export default function MiniArticleCard({ data }: Props) {
             fontFamily: '"Gotham XNarrow", sans-serif',
             textShadow: '0px 2px 3px rgba(0,0,0,0.25)',
             textAlign: 'center',
-            paddingLeft: 16,
-            paddingRight: 16,
           }}
         >
           {data.kicker}
         </p>
-
-        {/* Title */}
         <h3
           style={{
             margin: 0,
@@ -87,15 +82,23 @@ export default function MiniArticleCard({ data }: Props) {
             fontFamily: '"Gotham Condensed", sans-serif',
             textShadow: '0px 2px 3px rgba(0,0,0,0.25)',
             textAlign: 'center',
-            paddingLeft: 16,
-            paddingRight: 16,
           }}
         >
           {data.title}
         </h3>
+      </div>
 
-        {/* Action bar — identical to ArticleCard */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: 16, paddingRight: 16, marginTop: 8 }}>
+      {/* Action bar — pinned to bottom */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: '0 16px 16px',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <img src="/icons/heart.svg" width={22} height={22} alt="Like" />
@@ -145,3 +148,4 @@ export default function MiniArticleCard({ data }: Props) {
     </div>
   )
 }
+
