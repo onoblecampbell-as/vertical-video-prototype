@@ -16,12 +16,10 @@ export default function HorizontalVideoCard({ marginBottom = 0, marginTop = 0 }:
         background: '#000',
       }}
     >
-      <video
-        src="/ref/media/horizontal-video.mp4"
+      <img
+        src="/images/horizontal-video-thumb.jpg"
+        alt=""
         style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
-        preload="metadata"
-        playsInline
-        muted
       />
     </div>
   )
