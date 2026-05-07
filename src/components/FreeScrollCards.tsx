@@ -14,12 +14,14 @@ const BAHN2_ARTICLE: MiniArticleCardData = {
   heroSrc: '/images/articles/bahn2-hero.jpg',
   kicker: 'Minus 760 Millionen Euro',
   title: 'Mega-Verlust bei der Deutschen Bahn',
+  likeCount: 120,
 }
 
 const DAX_ARTICLE: MiniArticleCardData = {
   heroSrc: '/images/articles/dax-hero.png',
   kicker: '„Größte Ölkrise der Geschichte"',
   title: 'Rund 150 Milliarden Euro weg - Krieg drückt den Dax',
+  likeCount: 98,
 }
 
 const BAHN_ARTICLE: ArticleCardData = {
