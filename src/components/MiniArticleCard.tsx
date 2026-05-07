@@ -95,7 +95,7 @@ export default function MiniArticleCard({ data }: Props) {
         </h3>
 
         {/* Action bar — identical to ArticleCard */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: 16, paddingRight: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: 16, paddingRight: 16, marginTop: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <img src="/icons/heart.svg" width={22} height={22} alt="Like" />
