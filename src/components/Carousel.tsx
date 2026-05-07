@@ -216,7 +216,7 @@ export default function Carousel({ category, index, isActive }: Props) {
           right: 20,
           zIndex: 20,
           opacity: isActive && currentSlide === slides.length - 1 ? 1 : 0,
-          transition: 'opacity 0.3s ease',
+          transition: isActive && currentSlide === slides.length - 1 ? 'opacity 0.5s ease 1s' : 'opacity 0.15s ease',
           pointerEvents: isActive && currentSlide === slides.length - 1 ? 'auto' : 'none',
         }}
       >
