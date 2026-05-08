@@ -13,55 +13,33 @@ export default function HorizontalVideoCard({
   height?: number
   width?: string
 }) {
-  const [previewing, setPreviewing] = useState(false)
+  // We never call play() ourselves — autoPlay handles it. We just slide the
+  // thumbnail out of the way once the card is in the viewport.
+  const [thumbVisible, setThumbVisible] = useState(true)
   const [previewPending, setPreviewPending] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
   const delayTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const inViewport = useRef(false)
   const isHovered = useRef(false)
-  const pendingDoPlay = useRef<(() => void) | null>(null)
 
-  const startPreview = () => {
+  const showPreview = () => {
     if (delayTimer.current) clearTimeout(delayTimer.current)
     setPreviewPending(true)
     delayTimer.current = setTimeout(() => {
-      const video = videoRef.current
-      if (!video) return
-      const doPlay = () => {
-        pendingDoPlay.current = null
-        try { video.currentTime = 0 } catch (_) {}
-        video.play().catch(() => {})
-        setPreviewing(true)
-        setPreviewPending(false)
-      }
-      if (video.readyState >= 1) {
-        doPlay()
-      } else {
-        pendingDoPlay.current = doPlay
-        video.addEventListener('loadedmetadata', doPlay, { once: true })
-        video.load()
-      }
-    }, 800)
+      setThumbVisible(false)
+      setPreviewPending(false)
+    }, 700)
   }
 
-  const stopPreview = () => {
+  const hidePreview = () => {
     if (delayTimer.current) clearTimeout(delayTimer.current)
-    if (pendingDoPlay.current) {
-      videoRef.current?.removeEventListener('loadedmetadata', pendingDoPlay.current)
-      pendingDoPlay.current = null
-    }
-    const video = videoRef.current
-    if (video) {
-      video.pause()
-      try { video.currentTime = 0 } catch (_) {}
-    }
-    setPreviewing(false)
+    setThumbVisible(true)
     setPreviewPending(false)
   }
 
-  // Scroll-based visibility — IntersectionObserver with root:null doesn't fire
-  // reliably inside position:fixed overflow:scroll containers on iOS Chrome/Safari.
+  // Scroll-based visibility — getBoundingClientRect on the scrollable parent's
+  // scroll event, which works inside position:fixed overflow:scroll containers
+  // on iOS where IntersectionObserver (root:null) is unreliable.
   useEffect(() => {
     const card = cardRef.current
     if (!card) return
@@ -82,14 +60,14 @@ export default function HorizontalVideoCard({
       const rect = card.getBoundingClientRect()
       const vh = window.innerHeight
       const visible = Math.min(rect.bottom, vh) - Math.max(rect.top, 0)
-      const isVisible = rect.height > 0 && visible / rect.height >= 0.5
+      const isVisible = rect.height > 0 && visible / rect.height >= 0.4
 
       if (isVisible && !inViewport.current) {
         inViewport.current = true
-        if (!isHovered.current) startPreview()
+        if (!isHovered.current) showPreview()
       } else if (!isVisible && inViewport.current) {
         inViewport.current = false
-        stopPreview()
+        hidePreview()
       }
     }
 
@@ -103,21 +81,12 @@ export default function HorizontalVideoCard({
 
   const handleMouseEnter = () => {
     isHovered.current = true
-    startPreview()
+    showPreview()
   }
 
   const handleMouseLeave = () => {
     isHovered.current = false
-    stopPreview()
-  }
-
-  const handleVideoEnded = () => {
-    setPreviewing(false)
-    setPreviewPending(false)
-    const video = videoRef.current
-    if (video) {
-      try { video.currentTime = 0 } catch (_) {}
-    }
+    hidePreview()
   }
 
   return (
@@ -139,7 +108,25 @@ export default function HorizontalVideoCard({
         position: 'relative',
       }}
     >
-      {/* Thumbnail — dims while preview loads, fades out once playing */}
+      {/* autoPlay handles playback — no JS play() call needed */}
+      <video
+        src="/ref/media/video-highlights.mp4"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          display: 'block',
+        }}
+        autoPlay
+        playsInline
+        muted
+        loop
+        preload="auto"
+      />
+
+      {/* Thumbnail sits on top; slides away to reveal the playing video */}
       <img
         src="/images/thumbnails/horizontal-video-thumb1.png"
         alt=""
@@ -150,29 +137,10 @@ export default function HorizontalVideoCard({
           height: '100%',
           objectFit: 'cover',
           display: 'block',
-          opacity: previewing ? 0 : previewPending ? 0.45 : 1,
-          transition: 'opacity 0.4s ease',
+          opacity: thumbVisible ? (previewPending ? 0.5 : 1) : 0,
+          transition: 'opacity 0.5s ease',
+          pointerEvents: 'none',
         }}
-      />
-
-      {/* Preview video — fades in, plays once, fades back out */}
-      <video
-        ref={videoRef}
-        src="/ref/media/video-highlights.mp4"
-        style={{
-          position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          display: 'block',
-          opacity: previewing ? 1 : 0,
-          transition: 'opacity 0.4s ease',
-        }}
-        playsInline
-        muted
-        preload="metadata"
-        onEnded={handleVideoEnded}
       />
     </div>
   )

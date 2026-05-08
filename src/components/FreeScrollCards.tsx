@@ -7,7 +7,9 @@ import MiniPodcastCard from './MiniPodcastCard'
 import HorizontalVideoCard from './HorizontalVideoCard'
 
 const CARD_H = 'calc(var(--real-vh, 100dvh) - env(safe-area-inset-top) - 94px)'
-const HALF_CARD_H = 'calc((var(--real-vh, 100dvh) - env(safe-area-inset-top) - 94px - 16px) / 2)'
+const MINI_CARD_H = 371
+const HALF_CARD_H = `${MINI_CARD_H}px`
+const DOUBLE_CARD_H = `${MINI_CARD_H * 2 + 16}px` // 758px
 const CARD_W = 'calc(100% - 16px)'
 const BG = '#0d0d0d'
 
@@ -65,7 +67,7 @@ function DoubleCard({
   return (
     <div
       style={{
-        height: CARD_H,
+        height: DOUBLE_CARD_H,
         width: CARD_W,
         marginLeft: 'auto',
         marginRight: 'auto',
