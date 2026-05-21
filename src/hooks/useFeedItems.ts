@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { FeedItem } from '../types/feed'
 
-const MRSS_NS = 'https://search.yahoo.com/mrss/'
+const MRSS_NS = 'http://search.yahoo.com/mrss/'
 
 export const FULLSCREEN_ADS: FeedItem[] = [
   {
