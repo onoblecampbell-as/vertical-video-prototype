@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/feed",
+      "destination": "https://www.bild.de/feed/vWNdvZIMOpf9PqfTGWIj"
+    }
+  ]
+}
